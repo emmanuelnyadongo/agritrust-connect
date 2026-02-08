@@ -6,11 +6,12 @@ import {
   MessageSquare,
   History,
   User,
-  ChevronLeft,
-  ChevronRight,
+  Menu,
+  X,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -21,58 +22,35 @@ const navItems = [
 ];
 
 export const AppSidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
-  const { role, setRole } = useRole();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { role } = useRole();
   const location = useLocation();
+  const isMobile = useIsMobile();
 
-  return (
-    <aside
-      className={cn(
-        'fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-all duration-200',
-        collapsed ? 'w-16' : 'w-56'
-      )}
-    >
+  const sidebarContent = (
+    <>
       {/* Header */}
-      <div className="flex items-center gap-2 border-b border-sidebar-border px-4 py-5">
-        {!collapsed && (
-          <div>
-            <h1 className="font-heading text-lg font-semibold tracking-tight text-sidebar-foreground">
-              AgriTrust
-            </h1>
-            <p className="text-xs text-sidebar-foreground/60">Agricultural Marketplace</p>
-          </div>
-        )}
-        {collapsed && (
-          <span className="font-heading text-lg font-bold text-sidebar-primary">A</span>
+      <div className="flex items-center justify-between border-b border-sidebar-border px-4 py-5">
+        <div>
+          <h1 className="font-heading text-lg font-semibold tracking-tight text-sidebar-foreground">
+            AgriTrust
+          </h1>
+          <p className="text-xs text-sidebar-foreground/60">
+            {role === 'farmer' ? 'Farmer' : 'Buyer'} Account
+          </p>
+        </div>
+        {isMobile && (
+          <button onClick={() => setMobileOpen(false)} className="text-sidebar-foreground/60 hover:text-sidebar-foreground">
+            <X className="h-5 w-5" />
+          </button>
         )}
       </div>
 
-      {/* Role switcher */}
-      <div className="border-b border-sidebar-border px-3 py-3">
-        <div className={cn('flex gap-1', collapsed && 'flex-col')}>
-          <button
-            onClick={() => setRole('farmer')}
-            className={cn(
-              'rounded px-2 py-1 text-xs font-medium transition-colors',
-              role === 'farmer'
-                ? 'bg-sidebar-primary text-sidebar-primary-foreground'
-                : 'text-sidebar-foreground/60 hover:text-sidebar-foreground'
-            )}
-          >
-            {collapsed ? 'F' : 'Farmer'}
-          </button>
-          <button
-            onClick={() => setRole('buyer')}
-            className={cn(
-              'rounded px-2 py-1 text-xs font-medium transition-colors',
-              role === 'buyer'
-                ? 'bg-sidebar-primary text-sidebar-primary-foreground'
-                : 'text-sidebar-foreground/60 hover:text-sidebar-foreground'
-            )}
-          >
-            {collapsed ? 'B' : 'Buyer'}
-          </button>
-        </div>
+      {/* Role badge */}
+      <div className="border-b border-sidebar-border px-4 py-3">
+        <span className="inline-block rounded bg-sidebar-primary/10 px-2.5 py-1 text-xs font-medium text-sidebar-primary">
+          {role === 'farmer' ? 'Farmer' : 'Buyer'}
+        </span>
       </div>
 
       {/* Navigation */}
@@ -83,6 +61,7 @@ export const AppSidebar = () => {
             <NavLink
               key={item.to}
               to={item.to}
+              onClick={() => isMobile && setMobileOpen(false)}
               className={cn(
                 'flex items-center gap-3 rounded px-3 py-2.5 text-sm transition-colors',
                 isActive
@@ -91,19 +70,51 @@ export const AppSidebar = () => {
               )}
             >
               <item.icon className="h-4 w-4 shrink-0" />
-              {!collapsed && <span>{item.label}</span>}
+              <span>{item.label}</span>
             </NavLink>
           );
         })}
       </nav>
+    </>
+  );
 
-      {/* Collapse toggle */}
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="border-t border-sidebar-border px-4 py-3 text-sidebar-foreground/50 hover:text-sidebar-foreground"
-      >
-        {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-      </button>
+  // Mobile: hamburger + drawer
+  if (isMobile) {
+    return (
+      <>
+        {/* Mobile top bar */}
+        <div className="fixed left-0 right-0 top-0 z-50 flex items-center gap-3 border-b border-border bg-background px-4 py-3">
+          <button onClick={() => setMobileOpen(true)} className="text-foreground">
+            <Menu className="h-5 w-5" />
+          </button>
+          <span className="font-heading text-sm font-semibold text-foreground">AgriTrust</span>
+          <span className="ml-auto rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+            {role === 'farmer' ? 'Farmer' : 'Buyer'}
+          </span>
+        </div>
+
+        {/* Overlay */}
+        {mobileOpen && (
+          <div className="fixed inset-0 z-50 bg-black/40" onClick={() => setMobileOpen(false)} />
+        )}
+
+        {/* Drawer */}
+        <aside
+          className={cn(
+            'fixed left-0 top-0 z-50 flex h-screen w-64 flex-col bg-sidebar text-sidebar-foreground transition-transform duration-200',
+            mobileOpen ? 'translate-x-0' : '-translate-x-full'
+          )}
+        >
+          {sidebarContent}
+        </aside>
+      </>
+    );
+  }
+
+  // Desktop: fixed sidebar
+  return (
+    <aside className="fixed left-0 top-0 z-40 flex h-screen w-56 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
+      {sidebarContent}
     </aside>
   );
 };
