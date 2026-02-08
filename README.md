@@ -134,6 +134,8 @@ The flow avoids forced steps and allows natural movement between actions.
 - Real-time updates
 - Serverless functions for analytics and negotiation logic
 
+**Backend architecture and design** are documented in **[docs/BACKEND.md](docs/BACKEND.md)** (Supabase, schema, RLS, API usage, deployment).
+
 ---
 
 ## Project Structure
