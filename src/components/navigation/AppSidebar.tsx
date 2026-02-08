@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useRole } from '@/hooks/useRole';
 import {
   LayoutDashboard,
@@ -8,6 +8,7 @@ import {
   User,
   Menu,
   X,
+  LogOut,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -23,9 +24,15 @@ const navItems = [
 
 export const AppSidebar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { role } = useRole();
+  const { role, setRole } = useRole();
   const location = useLocation();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    setRole('farmer');
+    navigate('/');
+  };
 
   const sidebarContent = (
     <>
@@ -75,6 +82,17 @@ export const AppSidebar = () => {
           );
         })}
       </nav>
+
+      {/* Sign out */}
+      <div className="mt-auto border-t border-sidebar-border px-2 py-3">
+        <button
+          onClick={() => { isMobile && setMobileOpen(false); handleSignOut(); }}
+          className="flex w-full items-center gap-3 rounded px-3 py-2.5 text-sm text-sidebar-foreground/70 transition-colors hover:bg-destructive/10 hover:text-destructive"
+        >
+          <LogOut className="h-4 w-4 shrink-0" />
+          <span>Sign out</span>
+        </button>
+      </div>
     </>
   );
 
