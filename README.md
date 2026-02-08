@@ -1,73 +1,194 @@
-# Welcome to your Lovable project
+# AgriTrust
 
-## Project info
+> A negotiation-focused agricultural marketplace for smallholder farmers.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+---
 
-## How can I edit this code?
+## Overview
 
-There are several ways of editing your application.
+**AgriTrust** is a B2B web application designed to support fairer price negotiation between smallholder farmers and produce buyers in Zimbabwe.
 
-**Use Lovable**
+Most digital agriculture platforms focus on access or aggregation. AgriTrust focuses on **the negotiation moment**—introducing data-informed price guidance directly into buyer–farmer discussions while keeping final decisions in human hands.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- The system **does not** fix prices.
+- The system **does not** replace intermediaries.
+- The system **supports** informed negotiation.
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## The Problem
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Smallholder farmers often negotiate under pressure. Buyers usually have better information about:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Current market prices
+- Demand levels
+- Alternative supply sources
 
-Follow these steps:
+Farmers, especially when dealing with perishable goods, are forced to accept unfavourable prices due to information imbalance and urgency.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Existing digital platforms either **centralise pricing authority** or **provide price information outside the transaction flow**. In both cases, farmers remain price takers.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## What AgriTrust Does Differently
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+AgriTrust embeds negotiation support into the transaction itself.
+
+| Instead of… | The system provides… |
+|-------------|-------------------------|
+| Static price lists | Real-time market price ranges |
+| Informal off-platform bargaining | Contextual price recommendations |
+| — | Transparent reasoning behind guidance |
+
+Negotiation remains between people. The system acts as an **evidence layer**.
+
+---
+
+## Core Concepts
+
+| Principle | Meaning |
+|-----------|---------|
+| **Negotiation over automation** | The platform assists decision-making rather than replacing it. |
+| **Transparency over optimisation** | Users see why price guidance exists, not just the result. |
+| **Agency over control** | Farmers and buyers retain full authority over outcomes. |
+| **Trust over growth metrics** | Design prioritises traceability, consistency, and accountability. |
+
+---
+
+## Key Features
+
+### Produce Marketplace
+
+- Structured produce discovery
+- Contextual information over visual tiles
+- Emphasis on quantity, timing, and location
+
+### Assisted Negotiation Room
+
+- Clear offer history
+- Side-by-side price comparison
+- System-generated price guidance with explanation
+- No chat-style negotiation UI
+
+### Market Price Analytics
+
+- Historical and reference price ranges
+- Used to inform, not enforce, negotiation
+
+### Transaction Records
+
+- Traceable and auditable transaction history
+- Designed for accountability rather than engagement
+
+### Role-Based Dashboards
+
+- **Farmer:** Listings and negotiations
+- **Buyer:** Availability and market context
+
+---
+
+## User Roles
+
+### Farmer
+
+- Create and manage produce listings
+- Enter negotiations with buyers
+- View price guidance during negotiation
+- Review past transaction outcomes
+
+### Buyer
+
+- Discover available produce
+- Initiate and participate in negotiations
+- View market context during price discussion
+- Maintain transaction records
+
+---
+
+## User Flow Overview
+
+1. Farmer posts produce with quantity and availability details.
+2. Buyer discovers produce via the marketplace.
+3. Buyer initiates negotiation.
+4. System provides price guidance based on market data.
+5. Users exchange offers.
+6. Agreement is reached or negotiation ends.
+7. Transaction is recorded for traceability.
+
+The flow avoids forced steps and allows natural movement between actions.
+
+---
+
+## Tech Stack
+
+### Frontend
+
+- **React** · **JavaScript**
+- Component-based architecture
+- Mobile-first responsive design
+
+### Backend (Planned)
+
+- **Supabase** · **PostgreSQL**
+- Authentication and role management
+- Real-time updates
+- Serverless functions for analytics and negotiation logic
+
+---
+
+## Project Structure
+
+The frontend is organised to support backend integration later.
+
+```
+src/
+├── components/
+│   ├── navigation/
+│   ├── listings/
+│   ├── negotiation/
+│   ├── analytics/
+│   └── feedback/
+├── pages/
+│   ├── dashboard/
+│   ├── marketplace/
+│   ├── listing-detail/
+│   ├── negotiation-room/
+│   ├── transactions/
+│   └── profile/
+├── layouts/
+├── hooks/
+└── utils/
 ```
 
-**Edit a file directly in GitHub**
+This structure supports modular growth and clean API integration.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
+## Design Principles
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- **Calm, non-flashy interface** — Green-focused palette without gradients.
+- **Asymmetrical layouts** — To avoid generic SaaS patterns.
+- **Content-driven structure** — Rather than marketing sections.
 
-## What technologies are used for this project?
+The UI is designed to feel closer to a cooperative or market board than a startup landing page.
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Project Status
 
-## How can I deploy this project?
+This repository currently focuses on:
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+- Frontend UI and UX design
+- Component architecture
+- User flow modelling
 
-## Can I connect a custom domain to my Lovable project?
+Backend integration will be added in later phases.
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Motivation
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project is part of a **final-year software engineering capstone** and an applied research effort into negotiation support systems in smallholder agriculture.
+
+> The goal is not scale at all costs.  
+> The goal is **feasibility**, **fairness**, and **evidence**.
