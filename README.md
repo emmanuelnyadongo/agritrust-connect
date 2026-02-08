@@ -2,9 +2,11 @@
 
 > A negotiation-focused agricultural marketplace for smallholder farmers.
 
+**Repository:** [github.com/emmanuelnyadongo/agritrust-connect](https://github.com/emmanuelnyadongo/agritrust-connect)
+
 ---
 
-## Overview
+## Description
 
 **AgriTrust** is a B2B web application designed to support fairer price negotiation between smallholder farmers and produce buyers in Zimbabwe.
 
@@ -41,6 +43,75 @@ AgriTrust embeds negotiation support into the transaction itself.
 | — | Transparent reasoning behind guidance |
 
 Negotiation remains between people. The system acts as an **evidence layer**.
+
+---
+
+## How to Set Up the Environment and the Project
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18 or later recommended)
+- [npm](https://www.npmjs.com/) or [Bun](https://bun.sh/)
+- A [Supabase](https://supabase.com/) project (for backend)
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/emmanuelnyadongo/agritrust-connect.git
+cd agritrust-connect
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Environment variables
+
+Create a `.env` or `.env.local` in the project root with:
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+Get these from your [Supabase project](https://app.supabase.com) → **Settings** → **API**.
+
+### 4. Set up the database (Supabase)
+
+In the [Supabase SQL Editor](https://app.supabase.com/project/_/sql), run in order:
+
+1. `supabase/schema.sql` — tables, indexes, triggers  
+2. `supabase/policies.sql` — row level security policies  
+
+### 5. Run the app locally
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:8080](http://localhost:8080) in your browser.
+
+---
+
+## Designs
+
+- **Figma mockups:** _[Add link to your Figma file or embed]_  
+- **Screenshots:** _[Add screenshots of the app interfaces, e.g. marketplace, negotiation room, dashboard]_  
+- **Circuit / architecture diagram:** _[Add if applicable; e.g. frontend ↔ Supabase flow]_
+
+_Replace the placeholders above with your Figma link, screenshots, and any diagrams._
+
+---
+
+## Deployment Plan
+
+| Component        | Approach |
+|-----------------|----------|
+| **Frontend**    | Build the React app (`npm run build`) and deploy the `dist/` output to a static host (e.g. [Vercel](https://vercel.com), [Netlify](https://netlify.com), or GitHub Pages). Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the host’s environment. |
+| **Backend**     | Supabase hosts the database, Auth, and APIs. No separate server to deploy. Run `schema.sql` and `policies.sql` in the Supabase project used for production. |
+| **Environment**  | Use the same Supabase project for production or create a dedicated one; point the production frontend env vars to that project’s URL and anon key. |
 
 ---
 
