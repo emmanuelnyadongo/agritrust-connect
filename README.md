@@ -231,8 +231,7 @@ Mobile navigation drawer with menu items and sign-out option.
 </details>
 
 ### Additional Design Resources
-
-- **Figma mockups:** _[Add link to your Figma file or embed when available]_  
+ 
 - **Architecture diagram:** See [Backend Architecture](docs/BACKEND.md) for frontend ↔ Supabase flow diagram.
 
 ---
