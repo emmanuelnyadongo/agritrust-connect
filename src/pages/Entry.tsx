@@ -4,7 +4,7 @@ const Entry = () => {
   return (
     <div className="flex min-h-screen bg-background">
       {/* Left column — information */}
-      <div className="hidden flex-col justify-between border-r border-border bg-card p-10 lg:flex lg:w-[440px] xl:p-14">
+      <div className="hidden flex-col justify-between border-r border-border bg-card p-8 md:flex md:w-[340px] lg:w-[440px] lg:p-10 xl:p-14">
         <div>
           <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
             Agricultural Marketplace — Zimbabwe
@@ -49,8 +49,8 @@ const Entry = () => {
               <p className="mt-1 font-heading text-base text-foreground">142</p>
             </div>
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Negotiations</p>
-              <p className="mt-1 font-heading text-base text-foreground">38 this week</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Trending produce</p>
+              <p className="mt-1 font-heading text-base text-foreground">Maize (SC 513)</p>
             </div>
             <div>
               <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Registered users</p>
