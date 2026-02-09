@@ -4,6 +4,12 @@
 
 **Repository:** [github.com/emmanuelnyadongo/agritrust-connect](https://github.com/emmanuelnyadongo/agritrust-connect)
 
+## 📹 Video Demonstration
+
+**Watch the project demonstration video:** [View Video Demo](https://www.awesomescreenshot.com/video/49250805?key=8b27c8e6aed4459b93cd1c43f6794d4b)
+
+The video covers frontend development, backend architecture, database schema, and a live walkthrough of key functionalities.
+
 ---
 
 ## Description
