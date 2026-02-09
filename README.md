@@ -97,11 +97,143 @@ Open [http://localhost:8080](http://localhost:8080) in your browser.
 
 ## Designs
 
-- **Figma mockups:** _[Add link to your Figma file or embed]_  
-- **Screenshots:** _[Add screenshots of the app interfaces, e.g. marketplace, negotiation room, dashboard]_  
-- **Circuit / architecture diagram:** _[Add if applicable; e.g. frontend ↔ Supabase flow]_
+### Screenshots
 
-_Replace the placeholders above with your Figma link, screenshots, and any diagrams._
+Screenshots of the AgriTrust application across mobile, tablet, and desktop views:
+
+#### Desktop Views
+
+<details>
+<summary><strong>Authentication & Entry</strong></summary>
+
+**Sign-in Page**
+![Sign-in (Desktop)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_083737-af25faac-fb77-4f91-9da3-876e6f1ecaf.png)
+
+The sign-in interface with role selection (Farmer/Buyer), email/password fields, and platform information.
+
+</details>
+
+<details>
+<summary><strong>Marketplace</strong></summary>
+
+**Available Produce**
+![Marketplace (Desktop)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_083757-98204bbd-84bc-4581-91db-d5ce95d285d2.png)
+
+Browse available produce with search, region filters, and detailed listings showing farmer ratings, quantities, prices, and market ranges.
+
+</details>
+
+<details>
+<summary><strong>Negotiations</strong></summary>
+
+**Active Negotiations**
+![Active Negotiations (Desktop)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_083816-90f33985-5ba1-4b13-94b0-d5be1c30c8fe.png)
+
+View active negotiations with current prices, system guidance, and offer counts.
+
+</details>
+
+<details>
+<summary><strong>Transactions</strong></summary>
+
+**Transaction History**
+![Transaction History (Desktop)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_083835-0707e42d-628e-4e90-a10e-877424d4606e.png)
+
+Complete transaction records with dates, produce details, parties, agreed prices, and status indicators.
+
+</details>
+
+<details>
+<summary><strong>Profile</strong></summary>
+
+**User Profile**
+![Profile (Desktop)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_083847-3d1a5adf-518b-4fe4-ae9b-38ed114ab7bb.png)
+
+User profile showing identity, activity summary, trust score, and consistency indicators.
+
+</details>
+
+<details>
+<summary><strong>Dashboard</strong></summary>
+
+**Farmer Dashboard**
+![Farmer Dashboard (Desktop)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_083903-7f6bdbc5-a6d7-487f-84f0-250deb331141.png)
+
+Farmer dashboard with market price signals, active listings, negotiations, and recent transaction outcomes.
+
+</details>
+
+#### Mobile & Tablet Views
+
+<details>
+<summary><strong>Mobile Authentication</strong></summary>
+
+**Sign-in (Mobile)**
+![Sign-in (Mobile)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_084213-7ba419ed-03a8-4870-bef4-c6dc01d196c2.png)
+
+Mobile-optimized sign-in interface with role selection and form fields.
+
+</details>
+
+<details>
+<summary><strong>Mobile Marketplace</strong></summary>
+
+**Available Produce (Mobile)**
+![Marketplace (Mobile)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_084224-a12e680a-5b6c-470f-9882-c436b7cef93c.png)
+
+Mobile marketplace view with card-based listings, search, and region filters.
+
+</details>
+
+<details>
+<summary><strong>Mobile Negotiations</strong></summary>
+
+**Active Negotiations (Mobile)**
+![Active Negotiations (Mobile)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_084234-eeb2a001-7128-4898-81e9-8aba71417006.png)
+
+Mobile view of active negotiations with compact card layout.
+
+</details>
+
+<details>
+<summary><strong>Mobile Transactions</strong></summary>
+
+**Transaction History (Mobile)**
+![Transaction History (Mobile)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_084244-e67af5cf-85a4-4076-8928-bfc4135d3eb4.png)
+
+Mobile transaction history with scrollable card-based layout and status indicators.
+
+</details>
+
+<details>
+<summary><strong>Mobile Profile</strong></summary>
+
+**Profile (Mobile)**
+![Profile (Mobile)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_084253-202da541-f946-4459-90b9-283877c420ef.png)
+
+Mobile profile view with identity, activity summary, and trust score.
+
+</details>
+
+<details>
+<summary><strong>Mobile Dashboard</strong></summary>
+
+**Farmer Dashboard (Mobile)**
+![Farmer Dashboard (Mobile)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_084304-430897cd-0d67-4aa6-9dfe-94920de328d0.png)
+
+Mobile dashboard with market signals, listings, and recent outcomes.
+
+**Navigation Sidebar (Mobile)**
+![Navigation Sidebar (Mobile)](docs/screenshots/c__Users_HomePC_AppData_Roaming_Cursor_User_workspaceStorage_0e2f7595d2a88199143eada594fa6e70_images_Screenshot_2026-02-09_084315-a6e9ab14-dd1d-4a1d-b89a-60dd89999a98.png)
+
+Mobile navigation drawer with menu items and sign-out option.
+
+</details>
+
+### Additional Design Resources
+
+- **Figma mockups:** _[Add link to your Figma file or embed when available]_  
+- **Architecture diagram:** See [Backend Architecture](docs/BACKEND.md) for frontend ↔ Supabase flow diagram.
 
 ---
 
