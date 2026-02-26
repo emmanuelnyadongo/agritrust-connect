@@ -1,20 +1,30 @@
 import { AppLayout } from '@/layouts/AppLayout';
-import { listings } from '@/data/mock';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Search } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { getListings } from '@/services/supabaseService';
 
 const Marketplace = () => {
   const [search, setSearch] = useState('');
   const [locationFilter, setLocationFilter] = useState('all');
 
-  const locations = ['all', ...new Set(listings.map((l) => l.location))];
+  const {
+    data: listings = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['listings', 'marketplace'],
+    queryFn: () => getListings({ status: 'active' }),
+  });
 
-  const filtered = listings.filter((l) => {
+  const locations = ['all', ...new Set(listings.map((l: any) => l.location))];
+
+  const filtered = listings.filter((l: any) => {
     const matchesSearch =
       l.produce.toLowerCase().includes(search.toLowerCase()) ||
       l.variety.toLowerCase().includes(search.toLowerCase()) ||
-      l.farmer.name.toLowerCase().includes(search.toLowerCase());
+      (l.farmer?.name ?? '').toLowerCase().includes(search.toLowerCase());
     const matchesLocation = locationFilter === 'all' || l.location === locationFilter;
     return matchesSearch && matchesLocation;
   });
@@ -29,6 +39,16 @@ const Marketplace = () => {
           Available Produce
         </h1>
       </header>
+
+      {isLoading && (
+        <p className="mb-4 text-sm text-muted-foreground">Loading marketplace listings…</p>
+      )}
+
+      {isError && (
+        <p className="mb-4 text-sm text-destructive">
+          Unable to load listings. Please refresh the page.
+        </p>
+      )}
 
       {/* Filters */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -74,7 +94,7 @@ const Marketplace = () => {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((listing) => (
+            {filtered.map((listing: any) => (
               <tr key={listing.id} className="border-b border-border last:border-0 hover:bg-muted/30">
                 <td className="px-4 py-3">
                   <Link to={`/listing/${listing.id}`} className="font-medium text-foreground hover:text-primary hover:underline">
@@ -83,19 +103,17 @@ const Marketplace = () => {
                   <p className="text-xs text-muted-foreground">{listing.variety}</p>
                 </td>
                 <td className="px-4 py-3">
-                  <p className="text-foreground">{listing.farmer.name}</p>
-                  <p className="text-xs text-muted-foreground">{listing.farmer.rating}★</p>
+                  <p className="text-foreground">{listing.farmer?.name ?? 'Farmer'}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {listing.farmer?.rating ?? 0}★
+                  </p>
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">{listing.location}</td>
                 <td className="px-4 py-3 text-right text-foreground">{listing.quantity} {listing.unit}</td>
-                <td className="px-4 py-3 text-right font-medium text-foreground">${listing.pricePerUnit.toFixed(2)}</td>
-                <td className="px-4 py-3 text-right text-muted-foreground">${listing.marketLow.toFixed(2)}–${listing.marketHigh.toFixed(2)}</td>
+                <td className="px-4 py-3 text-right font-medium text-foreground">${listing.price_per_unit.toFixed(2)}</td>
+                <td className="px-4 py-3 text-right text-muted-foreground">${listing.market_low.toFixed(2)}–${listing.market_high.toFixed(2)}</td>
                 <td className="px-4 py-3">
-                  <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${
-                    listing.status === 'active' ? 'bg-primary/10 text-primary' :
-                    listing.status === 'in_negotiation' ? 'bg-warning/10 text-warning' :
-                    'bg-muted text-muted-foreground'
-                  }`}>
+                  <span className="inline-block rounded px-2 py-0.5 text-xs font-medium bg-primary/10 text-primary">
                     {listing.status === 'in_negotiation' ? 'Negotiating' : listing.status}
                   </span>
                 </td>
@@ -107,7 +125,7 @@ const Marketplace = () => {
 
       {/* Mobile cards */}
       <div className="space-y-2 md:hidden">
-        {filtered.map((listing) => (
+        {filtered.map((listing: any) => (
           <Link
             key={listing.id}
             to={`/listing/${listing.id}`}
@@ -116,9 +134,9 @@ const Marketplace = () => {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm font-medium text-foreground">{listing.produce} — {listing.variety}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {listing.farmer.name} · {listing.location}
-                </p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {listing.farmer?.name ?? 'Farmer'} · {listing.location}
+                  </p>
               </div>
               <span className={`rounded px-2 py-0.5 text-xs font-medium ${
                 listing.status === 'active' ? 'bg-primary/10 text-primary' :
@@ -128,13 +146,13 @@ const Marketplace = () => {
                 {listing.status === 'in_negotiation' ? 'Negotiating' : listing.status}
               </span>
             </div>
-            <div className="mt-2 flex items-baseline justify-between text-sm">
-              <span className="text-muted-foreground">{listing.quantity} {listing.unit}</span>
-              <span className="font-medium text-foreground">${listing.pricePerUnit.toFixed(2)}/kg</span>
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Market: ${listing.marketLow.toFixed(2)}–${listing.marketHigh.toFixed(2)}
-            </p>
+              <div className="mt-2 flex items-baseline justify-between text-sm">
+                <span className="text-muted-foreground">{listing.quantity} {listing.unit}</span>
+                <span className="font-medium text-foreground">${listing.price_per_unit.toFixed(2)}/kg</span>
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Market: ${listing.market_low.toFixed(2)}–${listing.market_high.toFixed(2)}
+              </p>
           </Link>
         ))}
       </div>

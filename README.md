@@ -4,7 +4,7 @@
 
 **Repository:** [github.com/emmanuelnyadongo/agritrust-connect](https://github.com/emmanuelnyadongo/agritrust-connect)
 
-## 📹 Video Demonstration
+## ðŸ“¹ Video Demonstration
 
 **Watch the project demonstration video:** [View Video Demo](https://www.awesomescreenshot.com/video/49250805?key=8b27c8e6aed4459b93cd1c43f6794d4b)
 
@@ -16,7 +16,7 @@ The video covers frontend development, backend architecture, database schema, an
 
 **AgriTrust** is a B2B web application designed to support fairer price negotiation between smallholder farmers and produce buyers in Zimbabwe.
 
-Most digital agriculture platforms focus on access or aggregation. AgriTrust focuses on **the negotiation moment**—introducing data-informed price guidance directly into buyer–farmer discussions while keeping final decisions in human hands.
+Most digital agriculture platforms focus on access or aggregation. AgriTrust focuses on **the negotiation moment**â€”introducing data-informed price guidance directly into buyerâ€“farmer discussions while keeping final decisions in human hands.
 
 - The system **does not** fix prices.
 - The system **does not** replace intermediaries.
@@ -42,11 +42,11 @@ Existing digital platforms either **centralise pricing authority** or **provide 
 
 AgriTrust embeds negotiation support into the transaction itself.
 
-| Instead of… | The system provides… |
+| Instead ofâ€¦ | The system providesâ€¦ |
 |-------------|-------------------------|
 | Static price lists | Real-time market price ranges |
 | Informal off-platform bargaining | Contextual price recommendations |
-| — | Transparent reasoning behind guidance |
+| â€” | Transparent reasoning behind guidance |
 
 Negotiation remains between people. The system acts as an **evidence layer**.
 
@@ -58,7 +58,6 @@ Negotiation remains between people. The system acts as an **evidence layer**.
 
 - [Node.js](https://nodejs.org/) (v18 or later recommended)
 - [npm](https://www.npmjs.com/) or [Bun](https://bun.sh/)
-- A [Supabase](https://supabase.com/) project (for backend)
 
 ### 1. Clone the repository
 
@@ -73,31 +72,15 @@ cd agritrust-connect
 npm install
 ```
 
-### 3. Environment variables
-
-Create a `.env` or `.env.local` in the project root with:
-
-```env
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-Get these from your [Supabase project](https://app.supabase.com) → **Settings** → **API**.
-
-### 4. Set up the database (Supabase)
-
-In the [Supabase SQL Editor](https://app.supabase.com/project/_/sql), run in order:
-
-1. `supabase/schema.sql` — tables, indexes, triggers  
-2. `supabase/policies.sql` — row level security policies  
-
-### 5. Run the app locally
+### 3. Run the app locally
 
 ```bash
 npm run dev
 ```
 
 Open [http://localhost:8080](http://localhost:8080) in your browser.
+
+**Note:** The application currently uses mock data for demonstration purposes. Backend integration is planned for future implementation. See the [Backend Architecture](docs/BACKEND.md) documentation for the planned database schema and API design.
 
 ---
 
@@ -238,17 +221,19 @@ Mobile navigation drawer with menu items and sign-out option.
 
 ### Additional Design Resources
  
-- **Architecture diagram:** See [Backend Architecture](docs/BACKEND.md) for frontend ↔ Supabase flow diagram.
+- **Architecture diagram:** See [Backend Architecture](docs/BACKEND.md) for frontend â†” Supabase flow diagram.
 
 ---
 
 ## Deployment Plan
 
+The following deployment plan outlines the intended infrastructure for production deployment. Backend integration is planned for future implementation.
+
 | Component        | Approach |
 |-----------------|----------|
-| **Frontend**    | Build the React app (`npm run build`) and deploy the `dist/` output to a static host (e.g. [Vercel](https://vercel.com), [Netlify](https://netlify.com), or GitHub Pages). Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the host’s environment. |
-| **Backend**     | Supabase hosts the database, Auth, and APIs. No separate server to deploy. Run `schema.sql` and `policies.sql` in the Supabase project used for production. |
-| **Environment**  | Use the same Supabase project for production or create a dedicated one; point the production frontend env vars to that project’s URL and anon key. |
+| **Frontend**    | The React app is built as a static site with `npm run build`, producing a `dist/` directory. This can be deployed to any static hosting service (e.g., Vercel, Netlify, GitHub Pages, or a traditional web server). Configure the required environment variables in your hosting platform's settings to connect to your backend service. |
+| **Backend**     | The backend uses a Backend-as-a-Service platform (e.g., Supabase)  that hosts the database, authentication, and APIs. No separate application server is required. Deploy the database schema by running `schema.sql` and `policies.sql` in your production database environment. |
+| **Environment**  | The production frontend connects to a production backend instance. Environment variables configured in your hosting platform point to the production backend service's URL and API keys. |
 
 ---
 
@@ -331,13 +316,13 @@ The flow avoids forced steps and allows natural movement between actions.
 
 ### Frontend
 
-- **React** · **JavaScript**
+- **React** Â· **JavaScript**
 - Component-based architecture
 - Mobile-first responsive design
 
 ### Backend (Planned)
 
-- **Supabase** · **PostgreSQL**
+- **Supabase** Â· **PostgreSQL**
 - Authentication and role management
 - Real-time updates
 - Serverless functions for analytics and negotiation logic
@@ -352,22 +337,22 @@ The frontend is organised to support backend integration later.
 
 ```
 src/
-├── components/
-│   ├── navigation/
-│   ├── listings/
-│   ├── negotiation/
-│   ├── analytics/
-│   └── feedback/
-├── pages/
-│   ├── dashboard/
-│   ├── marketplace/
-│   ├── listing-detail/
-│   ├── negotiation-room/
-│   ├── transactions/
-│   └── profile/
-├── layouts/
-├── hooks/
-└── utils/
+â”œâ”€â”€ components/
+â”‚   â”œâ”€â”€ navigation/
+â”‚   â”œâ”€â”€ listings/
+â”‚   â”œâ”€â”€ negotiation/
+â”‚   â”œâ”€â”€ analytics/
+â”‚   â””â”€â”€ feedback/
+â”œâ”€â”€ pages/
+â”‚   â”œâ”€â”€ dashboard/
+â”‚   â”œâ”€â”€ marketplace/
+â”‚   â”œâ”€â”€ listing-detail/
+â”‚   â”œâ”€â”€ negotiation-room/
+â”‚   â”œâ”€â”€ transactions/
+â”‚   â””â”€â”€ profile/
+â”œâ”€â”€ layouts/
+â”œâ”€â”€ hooks/
+â””â”€â”€ utils/
 ```
 
 This structure supports modular growth and clean API integration.
@@ -376,9 +361,9 @@ This structure supports modular growth and clean API integration.
 
 ## Design Principles
 
-- **Calm, non-flashy interface** — Green-focused palette without gradients.
-- **Asymmetrical layouts** — To avoid generic SaaS patterns.
-- **Content-driven structure** — Rather than marketing sections.
+- **Calm, non-flashy interface** â€” Green-focused palette without gradients.
+- **Asymmetrical layouts** â€” To avoid generic SaaS patterns.
+- **Content-driven structure** â€” Rather than marketing sections.
 
 The UI is designed to feel closer to a cooperative or market board than a startup landing page.
 

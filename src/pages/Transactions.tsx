@@ -1,7 +1,21 @@
 import { AppLayout } from '@/layouts/AppLayout';
-import { transactions } from '@/data/mock';
+import { useQuery } from '@tanstack/react-query';
+import { getTransactionsForUser } from '@/services/supabaseService';
+import { useAuth } from '@/hooks/useAuth';
 
 const Transactions = () => {
+  const { user } = useAuth();
+
+  const {
+    data: transactions = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['transactions', user?.id],
+    queryFn: () => getTransactionsForUser(user!.id),
+    enabled: !!user,
+  });
+
   return (
     <AppLayout>
       <header className="mb-6 sm:mb-8">
@@ -12,6 +26,16 @@ const Transactions = () => {
           Transaction History
         </h1>
       </header>
+
+      {isLoading && (
+        <p className="mb-4 text-sm text-muted-foreground">Loading transactions…</p>
+      )}
+
+      {isError && (
+        <p className="mb-4 text-sm text-destructive">
+          Unable to load transactions. Please refresh the page.
+        </p>
+      )}
 
       {/* Desktop table */}
       <div className="hidden overflow-hidden rounded border border-border md:block">
@@ -28,14 +52,14 @@ const Transactions = () => {
             </tr>
           </thead>
           <tbody>
-            {transactions.map((t) => (
+            {transactions.map((t: any) => (
               <tr key={t.id} className="border-b border-border last:border-0">
                 <td className="px-4 py-3 text-muted-foreground">{t.date}</td>
                 <td className="px-4 py-3 font-medium text-foreground">{t.produce}</td>
                 <td className="px-4 py-3 text-foreground">{t.quantity}</td>
-                <td className="px-4 py-3 text-muted-foreground">{t.buyer.name}</td>
-                <td className="px-4 py-3 text-muted-foreground">{t.farmer.name}</td>
-                <td className="px-4 py-3 text-right font-medium text-foreground">${t.agreedPrice.toFixed(2)}/kg</td>
+                <td className="px-4 py-3 text-muted-foreground">{t.buyer?.name}</td>
+                <td className="px-4 py-3 text-muted-foreground">{t.farmer?.name}</td>
+                <td className="px-4 py-3 text-right font-medium text-foreground">${t.agreed_price.toFixed(2)}/kg</td>
                 <td className="px-4 py-3">
                   <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${
                     t.status === 'completed' ? 'bg-primary/10 text-primary' :
@@ -53,7 +77,7 @@ const Transactions = () => {
 
       {/* Mobile cards */}
       <div className="space-y-2 md:hidden">
-        {transactions.map((t) => (
+        {transactions.map((t: any) => (
           <div key={t.id} className="rounded border border-border p-4">
             <div className="flex items-start justify-between">
               <div>
@@ -75,15 +99,15 @@ const Transactions = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Agreed price</span>
-                <span className="font-medium text-foreground">${t.agreedPrice.toFixed(2)}/kg</span>
+                <span className="font-medium text-foreground">${t.agreed_price.toFixed(2)}/kg</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Farmer</span>
-                <span className="text-foreground">{t.farmer.name}</span>
+                <span className="text-foreground">{t.farmer?.name}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Buyer</span>
-                <span className="text-foreground">{t.buyer.name}</span>
+                <span className="text-foreground">{t.buyer?.name}</span>
               </div>
             </div>
           </div>

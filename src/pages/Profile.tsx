@@ -1,16 +1,45 @@
 import { AppLayout } from '@/layouts/AppLayout';
-import { currentUser } from '@/data/mock';
-import { transactions } from '@/data/mock';
+import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/useAuth';
+import { getTransactionsForUser } from '@/services/supabaseService';
 
 const Profile = () => {
-  const completedCount = transactions.filter((t) => t.status === 'completed').length;
-  const disputedCount = transactions.filter((t) => t.status === 'disputed').length;
+  const { user, profile, loading } = useAuth();
+
+  const {
+    data: transactions = [],
+  } = useQuery({
+    queryKey: ['transactions', user?.id],
+    queryFn: () => getTransactionsForUser(user!.id),
+    enabled: !!user,
+  });
+
+  const completedCount = transactions.filter((t: any) => t.status === 'completed').length;
+  const disputedCount = transactions.filter((t: any) => t.status === 'disputed').length;
+
+  if (loading) {
+    return (
+      <AppLayout>
+        <p className="text-sm text-muted-foreground">Loading profile…</p>
+      </AppLayout>
+    );
+  }
+
+  if (!user || !profile) {
+    return (
+      <AppLayout>
+        <p className="text-sm text-muted-foreground">Profile not found.</p>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>
       <header className="mb-6 sm:mb-8">
         <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Profile</p>
-        <h1 className="mt-1 font-heading text-xl font-semibold text-foreground sm:text-2xl">{currentUser.name}</h1>
+        <h1 className="mt-1 font-heading text-xl font-semibold text-foreground sm:text-2xl">
+          {profile.name}
+        </h1>
       </header>
 
       <div className="grid gap-6 sm:gap-8 lg:grid-cols-3">
@@ -19,10 +48,10 @@ const Profile = () => {
             <h2 className="mb-3 font-heading text-sm font-semibold text-foreground">Identity</h2>
             <dl className="space-y-2 text-sm">
               {[
-                ['Name', currentUser.name],
-                ['Role', currentUser.role],
-                ['Location', currentUser.location],
-                ['Member since', currentUser.joined],
+                ['Name', profile.name],
+                ['Role', profile.role],
+                ['Location', profile.location],
+                ['Member since', new Date(profile.joined).toLocaleDateString('en-ZW')],
               ].map(([label, value]) => (
                 <div key={label} className="flex justify-between border-b border-border py-2">
                   <dt className="text-muted-foreground">{label}</dt>
@@ -56,8 +85,12 @@ const Profile = () => {
         <div className="space-y-4 sm:space-y-6">
           <section className="rounded border border-border p-4">
             <h3 className="mb-3 font-heading text-sm font-semibold text-foreground">Trust Score</h3>
-            <p className="font-heading text-3xl font-semibold text-primary">{currentUser.rating}</p>
-            <p className="mt-1 text-xs text-muted-foreground">out of 5.0 · Based on {currentUser.completedTransactions} completed transactions</p>
+            <p className="font-heading text-3xl font-semibold text-primary">
+              {profile.rating ?? 0}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              out of 5.0 · Based on {profile.completed_transactions ?? 0} completed transactions
+            </p>
           </section>
 
           <section className="rounded border border-border p-4">
@@ -69,11 +102,11 @@ const Profile = () => {
               </li>
               <li className="flex items-center gap-2">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-                Active for {new Date().getFullYear() - new Date(currentUser.joined).getFullYear()} years
+                Active for {new Date().getFullYear() - new Date(profile.joined).getFullYear()} years
               </li>
               <li className="flex items-center gap-2">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-                {currentUser.completedTransactions}+ completed trades
+                {profile.completed_transactions ?? 0}+ completed trades
               </li>
               <li className="flex items-center gap-2">
                 <span className={`inline-block h-1.5 w-1.5 rounded-full ${disputedCount === 0 ? 'bg-primary' : 'bg-warning'}`} />

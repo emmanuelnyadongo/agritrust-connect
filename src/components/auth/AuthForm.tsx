@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useRole } from '@/hooks/useRole';
 import { UserRole } from '@/types';
 import { cn } from '@/lib/utils';
+import { signIn, signUp, getSession, getProfile } from '@/services/supabaseService';
+import { toast } from 'sonner';
 
 type AuthMode = 'signin' | 'signup';
 
@@ -13,13 +15,49 @@ export const AuthForm = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const { setRole } = useRole();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setRole(selectedRole);
-    navigate('/dashboard');
+    if (submitting) return;
+
+    try {
+      setSubmitting(true);
+
+      if (mode === 'signup') {
+        await signUp({ email, password, role: selectedRole, name, location });
+        toast.success('Account created. You are now signed in.');
+      } else {
+        const { error } = await signIn(email, password);
+        if (error) throw error;
+        toast.success('Signed in successfully.');
+      }
+
+      const { data } = await getSession();
+      const session = data.session;
+      if (session?.user) {
+        try {
+          const profile = await getProfile(session.user.id);
+          if (profile?.role) {
+            setRole(profile.role as UserRole);
+          } else {
+            setRole(selectedRole);
+          }
+        } catch {
+          setRole(selectedRole);
+        }
+      } else {
+        setRole(selectedRole);
+      }
+
+      navigate('/dashboard');
+    } catch (err: any) {
+      toast.error(err.message ?? 'Authentication failed. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -159,9 +197,16 @@ export const AuthForm = () => {
 
         <button
           type="submit"
-          className="w-full rounded bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          className="w-full rounded bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+          disabled={submitting}
         >
-          {mode === 'signin' ? 'Sign in' : 'Create account'}
+          {submitting
+            ? mode === 'signin'
+              ? 'Signing in…'
+              : 'Creating account…'
+            : mode === 'signin'
+              ? 'Sign in'
+              : 'Create account'}
         </button>
       </form>
 

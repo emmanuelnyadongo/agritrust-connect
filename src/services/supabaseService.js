@@ -112,7 +112,10 @@ export async function deleteListing(id) {
 }
 
 // --- Negotiations ---
-const negotiationSelect = 'id, listing_id, buyer_id, status, system_guidance, created_at, updated_at, listing:listings(produce, variety, quantity, farmer_id), buyer:profiles!buyer_id(id, name)';
+const negotiationSelect =
+  'id, listing_id, buyer_id, status, system_guidance, created_at, updated_at,' +
+  ' listing:listings(id, produce, variety, quantity, unit, farmer:profiles!farmer_id(id, name)),' +
+  ' buyer:profiles!buyer_id(id, name)';
 
 export async function createNegotiation({ listingId, buyerId, systemGuidance }) {
   const { data, error } = await supabase

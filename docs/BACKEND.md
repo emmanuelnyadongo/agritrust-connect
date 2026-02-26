@@ -1,4 +1,4 @@
-# AgriTrust — Backend Architecture and Documentation
+# AgriTrust â€” Backend Architecture and Documentation
 
 This document describes the backend design for AgriTrust, a negotiation-focused agricultural marketplace. The backend is implemented using **Supabase** as a Backend-as-a-Service (BaaS) platform. The frontend is a React SPA that consumes Supabase APIs directly; there is no custom application server.
 
@@ -8,9 +8,9 @@ This document describes the backend design for AgriTrust, a negotiation-focused 
 
 ### Role of Supabase
 
-Supabase provides the core backend capabilities: **PostgreSQL** for persistence, **Supabase Auth** for identity, **Row Level Security (RLS)** for authorization, and **auto-generated REST and Realtime APIs** over the database. The frontend talks to Supabase via the official `@supabase/supabase-js` client using the project URL and the anon (public) key. Authenticated requests carry a JWT; RLS policies restrict which rows each user can read or write.
+Supabase provides the core backend capabilities: **PostgreSQL** for persistence, **Authentication service** for identity, **Row Level Security (RLS)** for authorization, and **auto-generated REST and Realtime APIs** over the database. The frontend talks to Supabase via the official `@supabase/supabase-js` client using the project URL and the anon (public) key. Authenticated requests carry a JWT; RLS policies restrict which rows each user can read or write.
 
-Supabase is treated as the **backend platform**, not as a thin wrapper. Design decisions—schema, constraints, and policies—are made with the same rigor as for a custom server. The main difference is that business rules are enforced in the database and in Supabase-specific features (Auth, RLS, Realtime) rather than in application server code.
+Supabase is treated as the **backend platform**, not as a thin wrapper. Design decisionsâ€”schema, constraints, and policiesâ€”are made with the same rigor as for a custom server. The main difference is that business rules are enforced in the database and in Supabase-specific features (Auth, RLS, Realtime) rather than in application server code.
 
 ### Why Supabase Over a Custom Backend
 
@@ -27,30 +27,30 @@ For a capstone project with a working frontend and limited time, Supabase allows
 ### High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Frontend (React SPA)                                            │
-│  - Auth: Supabase Auth (signInWithPassword, signUp, session)     │
-│  - Data: Supabase client (from(), insert(), update(), select())   │
-│  - Realtime: subscribe() for negotiation updates                 │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │ HTTPS (anon key + JWT)
-                               ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  Supabase                                                        │
-│  - Auth: JWT issuance, session management                         │
-│  - PostgREST: REST API over PostgreSQL                            │
-│  - Realtime: Broadcast changes on tables                         │
-│  - PostgreSQL: Tables, RLS, triggers, functions                  │
-└─────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  Frontend (React SPA)                                            â”‚
+â”‚  - Auth: Authentication service (signInWithPassword, signUp, session)     â”‚
+â”‚  - Data: Supabase client (from(), insert(), update(), select())   â”‚
+â”‚  - Realtime: subscribe() for negotiation updates                 â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                               â”‚ HTTPS (anon key + JWT)
+                               â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  Supabase                                                        â”‚
+â”‚  - Auth: JWT issuance, session management                         â”‚
+â”‚  - PostgREST: REST API over PostgreSQL                            â”‚
+â”‚  - Realtime: Broadcast changes on tables                         â”‚
+â”‚  - PostgreSQL: Tables, RLS, triggers, functions                  â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
-There is no intermediary API server. All “backend” behaviour is implemented by Supabase and by database objects (tables, RLS policies, triggers, and optional functions).
+There is no intermediary API server. All â€œbackendâ€ behaviour is implemented by Supabase and by database objects (tables, RLS policies, triggers, and optional functions).
 
 ---
 
 ## Authentication and Authorization
 
-### Authentication Flow (Supabase Auth)
+### Authentication Flow (Authentication service)
 
 1. **Sign up**  
    User submits email, password, and (in AgriTrust) role (farmer/buyer) and optional profile fields. The frontend calls `supabase.auth.signUp()`. Supabase creates the auth user and returns a session; the frontend then inserts or updates a row in `profiles` with `id = auth.uid()` and the chosen role.
@@ -64,14 +64,14 @@ There is no intermediary API server. All “backend” behaviour is implemented 
 4. **Sign out**  
    Frontend calls `supabase.auth.signOut()`. The client clears the local session; the JWT is no longer valid for future requests.
 
-No custom token issuance or password storage is implemented; Supabase Auth is the single source of truth for identity and session validity.
+No custom token issuance or password storage is implemented; Authentication service is the single source of truth for identity and session validity.
 
 ### Authorization Model (Roles and RLS)
 
 Authorization is **role-based** and **row-level**:
 
 - **Role**  
-  Stored in `profiles.role` as `farmer` or `buyer`, set at sign-up (or by an admin flow) and used in RLS policies. The frontend can read `profiles` for the current user to show role-specific UI (e.g. “My listings” for farmers, “Start negotiation” for buyers).
+  Stored in `profiles.role` as `farmer` or `buyer`, set at sign-up (or by an admin flow) and used in RLS policies. The frontend can read `profiles` for the current user to show role-specific UI (e.g. â€œMy listingsâ€ for farmers, â€œStart negotiationâ€ for buyers).
 
 - **Row Level Security**  
   Every table that holds user-specific or role-sensitive data has RLS enabled. Policies use `auth.uid()` and, where needed, `profiles.role` (via a join or helper function) to allow:
@@ -95,12 +95,12 @@ This keeps authorization logic in one place (the database) and prevents the fron
 
 ### Entity Relationship Summary
 
-- **profiles** — One per auth user; extends Supabase Auth with `role`, `name`, `location`, and optional stats (e.g. `completed_transactions`, `rating`). Referenced by all other user-scoped tables.
-- **listings** — Produce listings created by farmers; reference `profiles(farmer_id)`; include produce details, quantity, unit, quality, location, price, availability window, and status (`active`, `in_negotiation`, `sold`).
-- **negotiations** — One per buyer–listing pair (or per listing when only one active negotiation is allowed); reference `listings` and buyer/farmer from `profiles`; status (`active`, `agreed`, `declined`, `expired`); optional `system_guidance` (numeric) for price guidance.
-- **offers** — One row per offer in a negotiation; reference `negotiations`; `from_role` (farmer/buyer), `price`, `note`, `created_at`.
-- **transactions** — Record of agreed deals; reference negotiation or listing and buyer/farmer; agreed price, quantity, date, status (`completed`, `disputed`, `pending`).
-- **market_reference_prices** (optional) — Reference data for produce type (e.g. 30-day low/high/median) used to compute or display “system guidance” in the UI.
+- **profiles** â€” One per auth user; extends Authentication service with `role`, `name`, `location`, and optional stats (e.g. `completed_transactions`, `rating`). Referenced by all other user-scoped tables.
+- **listings** â€” Produce listings created by farmers; reference `profiles(farmer_id)`; include produce details, quantity, unit, quality, location, price, availability window, and status (`active`, `in_negotiation`, `sold`).
+- **negotiations** â€” One per buyerâ€“listing pair (or per listing when only one active negotiation is allowed); reference `listings` and buyer/farmer from `profiles`; status (`active`, `agreed`, `declined`, `expired`); optional `system_guidance` (numeric) for price guidance.
+- **offers** â€” One row per offer in a negotiation; reference `negotiations`; `from_role` (farmer/buyer), `price`, `note`, `created_at`.
+- **transactions** â€” Record of agreed deals; reference negotiation or listing and buyer/farmer; agreed price, quantity, date, status (`completed`, `disputed`, `pending`).
+- **market_reference_prices** (optional) â€” Reference data for produce type (e.g. 30-day low/high/median) used to compute or display â€œsystem guidanceâ€ in the UI.
 
 ### Tables, Relationships, and Constraints
 
@@ -111,22 +111,22 @@ This keeps authorization logic in one place (the database) and prevents the fron
   - Unique on `id`.
 
 - **listings**  
-  - `id` UUID PK; `farmer_id` UUID NOT NULL FK → `profiles(id)`.  
+  - `id` UUID PK; `farmer_id` UUID NOT NULL FK â†’ `profiles(id)`.  
   - `produce`, `variety`, `quantity`, `unit`, `quality`, `location` text; `price_per_unit`, `market_low`, `market_high`, `market_median` numeric; `available_from`, `available_until` date; `description` text; `status` text CHECK (`status IN ('active','in_negotiation','sold')`); `created_at` timestamptz.  
   - Indexes on `farmer_id`, `status`, `created_at` (and optionally `produce`, `location`) for marketplace queries.
 
 - **negotiations**  
-  - `id` UUID PK; `listing_id` UUID NOT NULL FK → `listings(id)`; `buyer_id` UUID NOT NULL FK → `profiles(id)`; farmer implied by `listings.farmer_id`.  
+  - `id` UUID PK; `listing_id` UUID NOT NULL FK â†’ `listings(id)`; `buyer_id` UUID NOT NULL FK â†’ `profiles(id)`; farmer implied by `listings.farmer_id`.  
   - `status` text CHECK (`status IN ('active','agreed','declined','expired')`); `system_guidance` numeric; `created_at`, `updated_at` timestamptz.  
-  - Unique constraint on `(listing_id, buyer_id)` or business rule “one active negotiation per listing” enforced in policy or trigger.
+  - Unique constraint on `(listing_id, buyer_id)` or business rule â€œone active negotiation per listingâ€ enforced in policy or trigger.
 
 - **offers**  
-  - `id` UUID PK; `negotiation_id` UUID NOT NULL FK → `negotiations(id)`; `from_role` text CHECK (`from_role IN ('farmer','buyer')`); `price` numeric NOT NULL; `note` text; `created_at` timestamptz.  
-  - Index on `negotiation_id` for “offer history” queries.
+  - `id` UUID PK; `negotiation_id` UUID NOT NULL FK â†’ `negotiations(id)`; `from_role` text CHECK (`from_role IN ('farmer','buyer')`); `price` numeric NOT NULL; `note` text; `created_at` timestamptz.  
+  - Index on `negotiation_id` for â€œoffer historyâ€ queries.
 
 - **transactions**  
-  - `id` UUID PK; `listing_id` UUID FK → `listings(id)`; `negotiation_id` UUID FK → `negotiations(id)`; `buyer_id`, `farmer_id` UUID FK → `profiles(id)`; `produce`, `quantity` text; `agreed_price` numeric; `date` date; `status` text CHECK (`status IN ('completed','disputed','pending')`).  
-  - Ensures traceability and supports “transaction history” views for both roles.
+  - `id` UUID PK; `listing_id` UUID FK â†’ `listings(id)`; `negotiation_id` UUID FK â†’ `negotiations(id)`; `buyer_id`, `farmer_id` UUID FK â†’ `profiles(id)`; `produce`, `quantity` text; `agreed_price` numeric; `date` date; `status` text CHECK (`status IN ('completed','disputed','pending')`).  
+  - Ensures traceability and supports â€œtransaction historyâ€ views for both roles.
 
 ### Example SQL: Table Creation and RLS
 
@@ -291,23 +291,23 @@ Profile creation on sign-up can be done by the frontend (with an RLS policy allo
 Business rules are enforced in the database and in Supabase features so that the frontend cannot bypass them:
 
 1. **Row Level Security**  
-   All mutable tables are protected by RLS. Even if the frontend sends a request with a different user’s ID, Supabase uses the JWT’s `auth.uid()` and the policy predicates; unauthorised rows are never returned or updated.
+   All mutable tables are protected by RLS. Even if the frontend sends a request with a different userâ€™s ID, Supabase uses the JWTâ€™s `auth.uid()` and the policy predicates; unauthorised rows are never returned or updated.
 
 2. **Constraints**  
    CHECK constraints on `status` and `role` columns, NOT NULL on required fields, and foreign keys ensure referential integrity and valid state values. Invalid data is rejected by PostgreSQL.
 
 3. **Triggers (optional)**  
-   - On `negotiations.status` changing to `agreed`, a trigger can create a row in `transactions` and set the listing’s status to `sold`.  
+   - On `negotiations.status` changing to `agreed`, a trigger can create a row in `transactions` and set the listingâ€™s status to `sold`.  
    - `updated_at` on `negotiations` can be maintained with a trigger.  
    - Profile stats (e.g. `completed_transactions`) can be updated via trigger when a transaction is inserted or its status becomes `completed`.
 
 4. **Computed or reference data**  
-   “System guidance” can be: (a) stored in `negotiations.system_guidance` and set by the frontend from a read of `market_reference_prices` or an Edge Function; or (b) computed in a database function and exposed via a view or RPC. Either way, the backend (DB or Edge Function) is the source of truth; the frontend only displays it.
+   â€œSystem guidanceâ€ can be: (a) stored in `negotiations.system_guidance` and set by the frontend from a read of `market_reference_prices` or an Edge Function; or (b) computed in a database function and exposed via a view or RPC. Either way, the backend (DB or Edge Function) is the source of truth; the frontend only displays it.
 
 5. **Supabase Realtime**  
-   The frontend can subscribe to `negotiations` and `offers` (with RLS applied) so that when the other party adds an offer or updates the negotiation, the UI updates without polling. This keeps the “negotiation room” in sync.
+   The frontend can subscribe to `negotiations` and `offers` (with RLS applied) so that when the other party adds an offer or updates the negotiation, the UI updates without polling. This keeps the â€œnegotiation roomâ€ in sync.
 
-There is no separate API server; “server-side” logic is exactly this combination of RLS, constraints, triggers, and optional Edge Functions or views.
+There is no separate API server; â€œserver-sideâ€ logic is exactly this combination of RLS, constraints, triggers, and optional Edge Functions or views.
 
 ### Example API Usage from the Frontend
 
@@ -448,7 +448,7 @@ const channel = supabase
 // Cleanup: channel.unsubscribe();
 ```
 
-These examples align with the existing UI: marketplace list, listing detail, negotiation room (with offer history and system guidance), transaction history, and role-based “my listings” / “my negotiations” (filtering by `farmer_id` or `buyer_id` in the same way the mock uses `currentUser.id`).
+These examples align with the existing UI: marketplace list, listing detail, negotiation room (with offer history and system guidance), transaction history, and role-based â€œmy listingsâ€ / â€œmy negotiationsâ€ (filtering by `farmer_id` or `buyer_id` in the same way the mock uses `currentUser.id`).
 
 ---
 
@@ -456,46 +456,46 @@ These examples align with the existing UI: marketplace list, listing detail, neg
 
 ### How the Backend is Hosted
 
-- **Supabase project**  
-  The backend is a single Supabase project. It provides:  
-  - PostgreSQL (hosted by Supabase);  
+- **Backend-as-a-Service platform**  
+  The backend uses a BaaS platform (e.g., Supabase) that provides:  
+  - PostgreSQL database (hosted);  
   - Auth (hosted);  
-  - PostgREST (auto-generated REST API);  
+  - Auto-generated REST API (e.g., PostgREST);  
   - Realtime (hosted);  
   - Optional: Storage and Edge Functions if needed later.
 
 - **Configuration**  
-  Project URL and anon key are set in the Supabase dashboard. No custom server is deployed; “deploying the backend” means running migrations (the SQL above) in the Supabase SQL editor or via a migration tool, and ensuring RLS and triggers are in place.
+  Backend configuration involves setting up the database schema and security policies. No custom server is deployed; â€œdeploying the backendâ€ means running migrations (the SQL above) in your database management interface or via a migration tool, and ensuring RLS and triggers are in place.
 
 - **Secrets**  
-  The anon key is safe to use in the browser; it is restricted by RLS. The service role key must never be exposed in the frontend; it is used only for admin scripts or trusted server-side code if introduced later.
+  Public API keys can be used in the browser as they are restricted by Row Level Security policies. Service role keys or admin credentials must never be exposed in the frontend; it is used only for administrative operations or trusted server-side code if introduced later.
 
 ### How the Frontend Connects
 
 - **Build**  
   The frontend is a static React SPA (e.g. Vite build). It is deployed to any static host (Vercel, Netlify, GitHub Pages, or a simple web server).
 
-- **Environment**  
-  At build or runtime, the app needs:
-  - `VITE_SUPABASE_URL` — Supabase project URL  
-  - `VITE_SUPABASE_ANON_KEY` — anon (public) key  
+- **Environment Variables**  
+  At build or runtime, the app requires environment variables that specify:
+  - Backend service URL (e.g., `VITE_SUPABASE_URL` for Supabase)  
+  - Public API key (e.g., `VITE_SUPABASE_ANON_KEY` for Supabase)  
 
-  These are read via `import.meta.env` in Vite and baked into the client. For production, they are set in the hosting platform’s environment and point to the same Supabase project.
+  These are read via `import.meta.env` in Vite and baked into the client. For production, they are set in the hosting platformâ€™s environment and point to the production backend instance.
 
 - **CORS**  
-  Supabase allows requests from the frontend origin; no extra CORS configuration is required when using the hosted Supabase project.
+  The backend service should be configured to allow requests from the frontend origin. Most BaaS platforms handle CORS automatically for their hosted services.
 
 - **No backend URL**  
-  The frontend does not call a custom backend; all data and auth go to the Supabase URL. Thus “backend deployment” is independent of the frontend; only env vars and migration state need to be kept in sync.
+  The frontend does not call a custom backend; all data and auth go to the backend service URL. Thus â€œbackend deploymentâ€ is independent of the frontend; only env vars and migration state need to be kept in sync.
 
 ### Summary
 
 | Component | Responsibility |
 |-----------|----------------|
-| Supabase (PostgreSQL) | Persistence, constraints, RLS, triggers |
-| Supabase Auth | Identity, sessions, JWTs |
-| Supabase PostgREST | REST API for CRUD and protected queries |
-| Supabase Realtime | Live updates for negotiation/offers |
-| Frontend | Auth UI, API calls via Supabase client, Realtime subscriptions |
+| Database (PostgreSQL) | Persistence, constraints, RLS, triggers |
+| Auth Service | Identity, sessions, JWTs |
+| REST API (e.g., PostgREST) | CRUD operations and protected queries |
+| Realtime Service | Live updates for negotiation/offers |
+| Frontend | Auth UI, API calls via backend client, Realtime subscriptions |
 
 This document is intended for academic and technical evaluation: it explains the backend architecture, the choice of Supabase, authentication and authorization, the database design with example SQL and RLS, how business logic is enforced without a traditional server, example frontend API usage, and deployment and infrastructure.
