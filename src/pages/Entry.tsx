@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { AuthForm } from '@/components/auth/AuthForm';
 
 const Entry = () => {
@@ -65,6 +66,10 @@ const Entry = () => {
             <a href="mailto:support@agritrust.co.zw?subject=AgriTrust%20support" className="text-primary hover:underline">
               Contact support
             </a>
+            {' · '}
+            <Link to="/terms" className="text-primary hover:underline">
+              Terms & Privacy
+            </Link>
           </p>
         </div>
       </div>
@@ -89,6 +94,10 @@ const Entry = () => {
           <a href="mailto:support@agritrust.co.zw?subject=AgriTrust%20support" className="text-primary hover:underline">
             Contact support
           </a>
+          {' · '}
+          <Link to="/terms" className="text-primary hover:underline">
+            Terms & Privacy
+          </Link>
         </p>
       </div>
     </div>

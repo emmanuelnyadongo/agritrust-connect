@@ -45,7 +45,20 @@ const Transactions = () => {
         </p>
       </div>
 
+      {transactions.length === 0 && !isLoading && !isError && (
+        <div className="rounded border border-border border-dashed bg-muted/20 p-8 text-center">
+          <p className="text-sm font-medium text-foreground">No transactions yet</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            When you agree on a deal in a negotiation, it will appear here.
+          </p>
+          <Link to="/marketplace" className="mt-4 inline-block text-sm font-medium text-primary hover:underline">
+            Browse marketplace
+          </Link>
+        </div>
+      )}
+
       {/* Desktop table */}
+      {transactions.length > 0 && (
       <div className="hidden overflow-hidden rounded border border-border md:block">
         <table className="w-full text-sm">
           <thead>
@@ -84,8 +97,10 @@ const Transactions = () => {
           </tbody>
         </table>
       </div>
+      )}
 
       {/* Mobile cards */}
+      {transactions.length > 0 && (
       <div className="space-y-2 md:hidden">
         {transactions.map((t: any) => (
           <Link key={t.id} to={`/transactions/${t.id}`} className="block rounded border border-border p-4 transition-colors hover:bg-muted/30">
@@ -123,6 +138,7 @@ const Transactions = () => {
           </Link>
         ))}
       </div>
+      )}
 
       <div className="mt-6 border-l-2 border-border pl-4">
         <p className="text-xs text-muted-foreground">

@@ -97,6 +97,16 @@ const NegotiationRoom = () => {
     },
   });
 
+  const declineMutation = useMutation({
+    mutationFn: () => updateNegotiationStatus(negotiationId, 'declined'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['negotiation', negotiationId] });
+      queryClient.invalidateQueries({ queryKey: ['negotiations'] });
+      queryClient.invalidateQueries({ queryKey: ['listings'] });
+      navigate('/negotiations');
+    },
+  });
+
   if (negotiationLoading || offersLoading) {
     return (
       <AppLayout>
@@ -289,15 +299,47 @@ const NegotiationRoom = () => {
                 </span>
                 )}
               </p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={handleAcceptDeal}
+                  disabled={agreeMutation.isPending || declineMutation.isPending}
+                  className="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+                >
+                  {agreeMutation.isPending ? 'Completing…' : 'Accept deal and complete transaction'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => declineMutation.mutate()}
+                  disabled={agreeMutation.isPending || declineMutation.isPending}
+                  className="rounded border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/50 disabled:opacity-60"
+                >
+                  {declineMutation.isPending ? 'Declining…' : 'Decline negotiation'}
+                </button>
+              </div>
+            </section>
+          )}
+
+          {isActive && !lastOffer && (
+            <section className="rounded border border-border p-4">
+              <p className="mb-2 text-xs text-muted-foreground">
+                Not ready to continue? You can end this negotiation.
+              </p>
               <button
                 type="button"
-                onClick={handleAcceptDeal}
-                disabled={agreeMutation.isPending}
-                className="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+                onClick={() => declineMutation.mutate()}
+                disabled={declineMutation.isPending}
+                className="rounded border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/50 disabled:opacity-60"
               >
-                {agreeMutation.isPending ? 'Completing…' : 'Accept deal and complete transaction'}
+                {declineMutation.isPending ? 'Declining…' : 'Decline negotiation'}
               </button>
             </section>
+          )}
+
+          {isActive && lastOffer && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              Not interested? Use &quot;Decline negotiation&quot; above; the other party will see it as ended.
+            </p>
           )}
         </div>
 
