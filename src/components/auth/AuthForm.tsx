@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useRole } from '@/hooks/useRole';
 import { UserRole } from '@/types';
 import { cn } from '@/lib/utils';
-import { signIn, signUp, getSession, getProfile } from '@/services/supabaseService';
+import { signIn, signUp, getSession, getProfile, resetPasswordForEmail } from '@/services/supabaseService';
 import { toast } from 'sonner';
 
-type AuthMode = 'signin' | 'signup';
+type AuthMode = 'signin' | 'signup' | 'forgot';
 
 export const AuthForm = () => {
   const [mode, setMode] = useState<AuthMode>('signin');
@@ -25,6 +25,14 @@ export const AuthForm = () => {
 
     try {
       setSubmitting(true);
+
+      if (mode === 'forgot') {
+        const { error } = await resetPasswordForEmail(email);
+        if (error) throw error;
+        toast.success('Check your email for the password reset link.');
+        setMode('signin');
+        return;
+      }
 
       if (mode === 'signup') {
         await signUp({ email, password, role: selectedRole, name, location });
@@ -90,7 +98,8 @@ export const AuthForm = () => {
         </button>
       </div>
 
-      {/* Role selection */}
+      {/* Role selection — hide when forgot */}
+      {mode !== 'forgot' && (
       <fieldset className="mb-6">
         <legend className="mb-2.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
           I am a
@@ -128,9 +137,46 @@ export const AuthForm = () => {
           </button>
         </div>
       </fieldset>
+      )}
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
+        {mode === 'forgot' && (
+          <>
+            <p className="text-xs text-muted-foreground">
+              Enter your email and we&apos;ll send you a link to reset your password.
+            </p>
+            <div>
+              <label htmlFor="forgot-email" className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                Email address
+              </label>
+              <input
+                id="forgot-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full rounded bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+              disabled={submitting}
+            >
+              {submitting ? 'Sending…' : 'Send reset link'}
+            </button>
+            <p className="mt-3 text-center text-xs text-muted-foreground">
+              <button type="button" onClick={() => setMode('signin')} className="text-primary hover:underline">
+                Back to Sign in
+              </button>
+            </p>
+          </>
+        )}
+
+        {mode !== 'forgot' && (
+        <>
         {mode === 'signup' && (
           <>
             <div>
@@ -195,6 +241,14 @@ export const AuthForm = () => {
           />
         </div>
 
+        {mode === 'signin' && (
+          <p className="text-center text-xs text-muted-foreground">
+            <button type="button" onClick={() => setMode('forgot')} className="text-primary hover:underline">
+              Forgot password?
+            </button>
+          </p>
+        )}
+
         <button
           type="submit"
           className="w-full rounded bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
@@ -208,13 +262,17 @@ export const AuthForm = () => {
               ? 'Sign in'
               : 'Create account'}
         </button>
+        </>
+        )}
       </form>
 
+      {mode !== 'forgot' && (
       <p className="mt-4 text-xs text-muted-foreground">
         {mode === 'signin'
           ? 'No account yet? Switch to Create account above.'
           : 'Already have an account? Switch to Sign in above.'}
       </p>
+      )}
     </div>
   );
 };

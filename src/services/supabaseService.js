@@ -28,6 +28,11 @@ export async function signIn(email, password) {
   return supabase.auth.signInWithPassword({ email, password });
 }
 
+export async function resetPasswordForEmail(email) {
+  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/` : undefined;
+  return supabase.auth.resetPasswordForEmail(email, { redirectTo });
+}
+
 export async function signOut() {
   return supabase.auth.signOut();
 }

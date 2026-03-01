@@ -3,7 +3,20 @@
 > A negotiation-focused agricultural marketplace for smallholder farmers.
 
 **Repository:** [github.com/emmanuelnyadongo/agritrust-connect](https://github.com/emmanuelnyadongo/agritrust-connect)  
-**Live app:** [agritrust-connect-theta.vercel.app](https://agritrust-connect-theta.vercel.app/)
+**Live app (deployed):** [agritrust-connect-theta.vercel.app](https://agritrust-connect-theta.vercel.app/)
+
+---
+
+## Submission (Attempt 1)
+
+| Item | Link / location |
+|------|------------------|
+| **Deployed app** | [https://agritrust-connect-theta.vercel.app/](https://agritrust-connect-theta.vercel.app/) |
+| **Demo video (≈5 min)** | [View Video Demo](https://www.awesomescreenshot.com/video/49250805?key=8b27c8e6aed4459b93cd1c43f6794d4b) — focus on core functionalities (marketplace, listing, negotiation, transaction, ratings) |
+| **Install & run** | See [How to Set Up the Environment and the Project](#how-to-set-up-the-environment-and-the-project) below (step-by-step). |
+| **Related files** | See [Related files to the project](#related-files-to-the-project) below. |
+
+---
 
 ## ðŸ“¹ Video Demonstration
 
@@ -91,6 +104,27 @@ npm run dev
 ```
 
 Open [http://localhost:8080](http://localhost:8080) in your browser. The app uses **Supabase** for authentication, data storage, and real-time updates. See [Backend Architecture](docs/BACKEND.md) for schema, RLS, and API usage.
+
+### 5. (Optional) Build for production
+
+```bash
+npm run build
+```
+
+Output is in `dist/`. Deploy that folder to any static host (e.g. Vercel); set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the host environment.
+
+---
+
+## Related files to the project
+
+| Purpose | Files / folders |
+|--------|------------------|
+| **Frontend app** | `src/` — `pages/` (Dashboard, Marketplace, ListingDetail, NewListing, NewNegotiation, NegotiationRoom, Transactions, TransactionDetail, Profile, Entry), `components/`, `layouts/`, `hooks/`, `services/`, `utils/` |
+| **Backend (Supabase)** | `supabase/schema.sql`, `supabase/policies.sql`, `supabase/migrations/` (001, 002, 003) |
+| **API & auth** | `src/services/supabaseService.js` — listings, negotiations, offers, transactions, messages, ratings |
+| **Negotiation logic** | `src/utils/negotiationGuidance.ts` — rule-based price guidance |
+| **Config** | `package.json`, `vite.config.ts`, `.env` (create from `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) |
+| **Docs** | `docs/BACKEND.md` (architecture), `docs/PROPOSAL_REQUIREMENTS_CHECKLIST.md` (research alignment) |
 
 ---
 

@@ -61,6 +61,11 @@ const Entry = () => {
             AgriTrust is operated as a public service tool. It does not buy, sell, or
             hold produce. All transactions are between registered users.
           </p>
+          <p className="pt-2 text-xs text-muted-foreground">
+            <a href="mailto:support@agritrust.co.zw?subject=AgriTrust%20support" className="text-primary hover:underline">
+              Contact support
+            </a>
+          </p>
         </div>
       </div>
 
@@ -80,6 +85,11 @@ const Entry = () => {
         </div>
 
         <AuthForm />
+        <p className="mt-6 text-center text-xs text-muted-foreground md:hidden">
+          <a href="mailto:support@agritrust.co.zw?subject=AgriTrust%20support" className="text-primary hover:underline">
+            Contact support
+          </a>
+        </p>
       </div>
     </div>
   );
