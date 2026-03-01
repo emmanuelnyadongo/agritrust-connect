@@ -394,29 +394,6 @@ Main app code lives in `src/`; Supabase schema, policies, and migrations are in 
 | `supabase/policies.sql` | Row Level Security policies |
 | `supabase/migrations/` | 001 (ratings, messages, partial qty), 002 (RLS), 003 (transaction status) |
 
-```
-src/
-â”œâ”€â”€ components/
-â”‚   â”œâ”€â”€ navigation/
-â”‚   â”œâ”€â”€ listings/
-â”‚   â”œâ”€â”€ negotiation/
-â”‚   â”œâ”€â”€ analytics/
-â”‚   â””â”€â”€ feedback/
-â”œâ”€â”€ pages/
-â”‚   â”œâ”€â”€ dashboard/
-â”‚   â”œâ”€â”€ marketplace/
-â”‚   â”œâ”€â”€ listing-detail/
-â”‚   â”œâ”€â”€ negotiation-room/
-â”‚   â”œâ”€â”€ transactions/
-â”‚   â””â”€â”€ profile/
-â”œâ”€â”€ layouts/
-â”œâ”€â”€ hooks/
-â””â”€â”€ utils/
-```
-
-This structure supports modular growth and clean API integration.
-
----
 
 ## Design Principles
 
