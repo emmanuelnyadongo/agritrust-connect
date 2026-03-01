@@ -2,7 +2,8 @@
 
 > A negotiation-focused agricultural marketplace for smallholder farmers.
 
-**Repository:** [github.com/emmanuelnyadongo/agritrust-connect](https://github.com/emmanuelnyadongo/agritrust-connect)
+**Repository:** [github.com/emmanuelnyadongo/agritrust-connect](https://github.com/emmanuelnyadongo/agritrust-connect)  
+**Live app:** [agritrust-connect-theta.vercel.app](https://agritrust-connect-theta.vercel.app/)
 
 ## ðŸ“¹ Video Demonstration
 
@@ -72,15 +73,24 @@ cd agritrust-connect
 npm install
 ```
 
-### 3. Run the app locally
+### 3. Configure environment variables
+
+Create a `.env` file in the project root (or set these in your hosting platform for production):
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+Get these from your [Supabase](https://supabase.com) project: **Settings → API**. Run the SQL in `supabase/schema.sql`, `supabase/policies.sql`, and the migrations in `supabase/migrations/` in the Supabase SQL Editor to set up the database.
+
+### 4. Run the app locally
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:8080](http://localhost:8080) in your browser.
-
-**Note:** The application currently uses mock data for demonstration purposes. Backend integration is planned for future implementation. See the [Backend Architecture](docs/BACKEND.md) documentation for the planned database schema and API design.
+Open [http://localhost:8080](http://localhost:8080) in your browser. The app uses **Supabase** for authentication, data storage, and real-time updates. See [Backend Architecture](docs/BACKEND.md) for schema, RLS, and API usage.
 
 ---
 
@@ -227,13 +237,13 @@ Mobile navigation drawer with menu items and sign-out option.
 
 ## Deployment Plan
 
-The following deployment plan outlines the intended infrastructure for production deployment. Backend integration is planned for future implementation.
+The app is deployed with a Supabase backend and a static frontend.
 
 | Component        | Approach |
 |-----------------|----------|
-| **Frontend**    | The React app is built as a static site with `npm run build`, producing a `dist/` directory. This can be deployed to any static hosting service (e.g., Vercel, Netlify, GitHub Pages, or a traditional web server). Configure the required environment variables in your hosting platform's settings to connect to your backend service. |
-| **Backend**     | The backend uses a Backend-as-a-Service platform (e.g., Supabase)  that hosts the database, authentication, and APIs. No separate application server is required. Deploy the database schema by running `schema.sql` and `policies.sql` in your production database environment. |
-| **Environment**  | The production frontend connects to a production backend instance. Environment variables configured in your hosting platform point to the production backend service's URL and API keys. |
+| **Frontend**    | Build with `npm run build` (output in `dist/`). Deploy to Vercel, Netlify, or any static host. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the host's environment. |
+| **Backend**     | **Supabase** hosts PostgreSQL, Authentication, and Realtime. Run `supabase/schema.sql`, `supabase/policies.sql`, and the scripts in `supabase/migrations/` in your Supabase project (SQL Editor or CLI). No separate application server is used. |
+| **Environment** | Production frontend connects to your production Supabase project via the same two environment variables. |
 
 ---
 
@@ -271,7 +281,9 @@ The following deployment plan outlines the intended infrastructure for productio
 ### Transaction Records
 
 - Traceable and auditable transaction history
-- Designed for accountability rather than engagement
+- Post-deal messaging and contact details (including phone)
+- Optional 1–5 star ratings that update trust scores
+- Payment note clarifying that payment is arranged off-platform
 
 ### Role-Based Dashboards
 
@@ -316,24 +328,23 @@ The flow avoids forced steps and allows natural movement between actions.
 
 ### Frontend
 
-- **React** Â· **JavaScript**
-- Component-based architecture
-- Mobile-first responsive design
+- **React** · **TypeScript/JavaScript** · **Vite**
+- Component-based architecture, mobile-first responsive design
+- TanStack Query for data; Supabase client for auth and API
 
-### Backend (Planned)
+### Backend
 
-- **Supabase** Â· **PostgreSQL**
-- Authentication and role management
-- Real-time updates
-- Serverless functions for analytics and negotiation logic
+- **Supabase**: PostgreSQL database, Authentication, Row Level Security (RLS), Realtime (offers and negotiation updates)
+- **Schema**: `profiles`, `listings`, `negotiations`, `offers`, `transactions`, `transaction_messages`, `ratings`, `market_reference_prices`; triggers for transaction creation and profile stats
+- Negotiation guidance is computed in the frontend from listing market data (rule-based heuristic)
 
-**Backend architecture and design** are documented in **[docs/BACKEND.md](docs/BACKEND.md)** (Supabase, schema, RLS, API usage, deployment).
+**Backend architecture and design** are documented in **[docs/BACKEND.md](docs/BACKEND.md)**. A **[proposal requirements checklist](docs/PROPOSAL_REQUIREMENTS_CHECKLIST.md)** maps the implementation to the research objectives.
 
 ---
 
 ## Project Structure
 
-The frontend is organised to support backend integration later.
+Main app code lives in `src/`; Supabase schema, policies, and migrations are in `supabase/`.
 
 ```
 src/
@@ -371,13 +382,11 @@ The UI is designed to feel closer to a cooperative or market board than a startu
 
 ## Project Status
 
-This repository currently focuses on:
+The application is **fully integrated with Supabase**:
 
-- Frontend UI and UX design
-- Component architecture
-- User flow modelling
-
-Backend integration will be added in later phases.
+- **Frontend**: React (Vite), role-based dashboards, marketplace, listing creation, negotiation room with real-time offers, transaction history and detail (with messaging and ratings), profile with trust score and phone.
+- **Backend**: Supabase (PostgreSQL, Auth, RLS, Realtime). Schema, policies, and migrations are in `supabase/`. Negotiation outcomes, agreed prices, and ratings are stored for pilot evaluation.
+- **Pilot evaluation**: Negotiation and transaction data support analysis of outcomes and price variance. **User feedback** is collected via an external form (e.g. survey or interviews) in addition to in-app post-transaction star ratings.
 
 ---
 

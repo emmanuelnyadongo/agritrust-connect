@@ -1,5 +1,5 @@
 import { AppLayout } from '@/layouts/AppLayout';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -7,19 +7,23 @@ import {
   getNegotiationById,
   getOffersByNegotiationId,
   createOffer,
+  updateNegotiationStatus,
+  getTransactionsForUser,
   subscribeToOffers,
   subscribeToNegotiation,
 } from '@/services/supabaseService';
 import { useRole } from '@/hooks/useRole';
 import { useAuth } from '@/hooks/useAuth';
+import { MarketDataSource } from '@/components/analytics/MarketDataSource';
 
 const NegotiationRoom = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const negotiationId = id as string;
   const [newPrice, setNewPrice] = useState('');
   const [newNote, setNewNote] = useState('');
   const { role } = useRole();
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
   const queryClient = useQueryClient();
 
   const {
@@ -70,6 +74,29 @@ const NegotiationRoom = () => {
     },
   });
 
+  const agreeMutation = useMutation({
+    mutationFn: () => updateNegotiationStatus(negotiationId, 'agreed'),
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['negotiation', negotiationId] });
+      queryClient.invalidateQueries({ queryKey: ['negotiations'] });
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['listings'] });
+      if (user?.id) {
+        try {
+          const transactions = await getTransactionsForUser(user.id);
+          const latest = transactions?.[0];
+          if (latest?.id) {
+            navigate(`/transactions/${latest.id}`);
+            return;
+          }
+        } catch {
+          /* ignore */
+        }
+      }
+      navigate('/transactions');
+    },
+  });
+
   if (negotiationLoading || offersLoading) {
     return (
       <AppLayout>
@@ -94,6 +121,8 @@ const NegotiationRoom = () => {
     : '0';
 
   const effectiveRole = profile?.role ?? role;
+  const isActive = negotiation.status === 'active';
+  const isAgreed = negotiation.status === 'agreed';
 
   const handleSubmitOffer = async () => {
     if (!newPrice || !effectiveRole) return;
@@ -109,6 +138,10 @@ const NegotiationRoom = () => {
 
     setNewPrice('');
     setNewNote('');
+  };
+
+  const handleAcceptDeal = () => {
+    agreeMutation.mutate();
   };
 
   return (
@@ -128,6 +161,18 @@ const NegotiationRoom = () => {
           {new Date(negotiation.created_at).toLocaleDateString('en-ZW')}
         </p>
       </header>
+
+      {isAgreed && (
+        <div className="mb-6 rounded border border-primary/30 bg-primary/5 p-4">
+          <p className="font-medium text-foreground">Deal completed</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            This negotiation is closed. A transaction record has been created.
+          </p>
+          <Link to="/transactions" className="mt-3 inline-block text-sm font-medium text-primary hover:underline">
+            View transaction history →
+          </Link>
+        </div>
+      )}
 
       {/* Mobile: guidance summary card */}
       <div className="mb-6 rounded border border-border p-4 lg:hidden">
@@ -189,39 +234,71 @@ const NegotiationRoom = () => {
             </div>
           </section>
 
-          <section className="rounded border border-border p-4 sm:p-5">
-            <h2 className="mb-3 font-heading text-sm font-semibold text-foreground">Submit Counter Offer</h2>
-            <div className="space-y-3">
-              <div>
-                <label className="mb-1 block text-xs font-medium text-muted-foreground">Your offer ($/kg)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={newPrice}
-                  onChange={(e) => setNewPrice(e.target.value)}
-                  placeholder={systemGuidance ? `e.g. ${systemGuidance.toFixed(2)}` : 'Enter price'}
-                  className="w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                />
+          {isActive && (
+            <section className="rounded border border-border p-4 sm:p-5">
+              <h2 className="mb-3 font-heading text-sm font-semibold text-foreground">Submit Counter Offer</h2>
+              <div className="space-y-3">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-muted-foreground">Your offer ($/kg)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={newPrice}
+                    onChange={(e) => setNewPrice(e.target.value)}
+                    placeholder={systemGuidance ? `e.g. ${systemGuidance.toFixed(2)}` : 'Enter price'}
+                    className="w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-muted-foreground">Note (optional)</label>
+                  <textarea
+                    value={newNote}
+                    onChange={(e) => setNewNote(e.target.value)}
+                    rows={2}
+                    placeholder="Explain your reasoning…"
+                    className="w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSubmitOffer}
+                  className="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  Submit offer
+                </button>
               </div>
-              <div>
-                <label className="mb-1 block text-xs font-medium text-muted-foreground">Note (optional)</label>
-                <textarea
-                  value={newNote}
-                  onChange={(e) => setNewNote(e.target.value)}
-                  rows={2}
-                  placeholder="Explain your reasoning…"
-                  className="w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                />
-              </div>
+            </section>
+          )}
+
+          {isActive && lastOffer && (
+            <section className="rounded border border-primary/30 bg-primary/5 p-4 sm:p-5">
+              <h2 className="mb-2 font-heading text-sm font-semibold text-foreground">Complete transaction</h2>
+              <p className="mb-3 text-sm text-muted-foreground">
+                When you and the other party agree on a price, either of you can accept the last offer to close the deal.
+                A transaction record will be created and the listing marked as sold.
+              </p>
+              <p className="mb-3 text-sm font-medium text-foreground">
+                Accept deal at <span className="font-heading text-lg text-primary">${lastOffer.price.toFixed(2)}/kg</span>
+                {negotiation.listing?.quantity && negotiation.listing?.unit && (
+                  <span className="text-muted-foreground">
+                  ({negotiation.requested_quantity != null
+                    ? `${negotiation.requested_quantity} ${negotiation.listing?.unit ?? 'kg'}`
+                    : negotiation.listing?.remaining_quantity != null
+                      ? `${negotiation.listing.remaining_quantity} ${negotiation.listing.unit}`
+                      : `${negotiation.listing?.quantity ?? ''} ${negotiation.listing?.unit ?? ''}`})
+                </span>
+                )}
+              </p>
               <button
                 type="button"
-                onClick={handleSubmitOffer}
-                className="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                onClick={handleAcceptDeal}
+                disabled={agreeMutation.isPending}
+                className="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
               >
-                Submit offer
+                {agreeMutation.isPending ? 'Completing…' : 'Accept deal and complete transaction'}
               </button>
-            </div>
-          </section>
+            </section>
+          )}
         </div>
 
         {/* Sidebar — Evidence panel (hidden on mobile, summary shown above) */}
@@ -275,6 +352,8 @@ const NegotiationRoom = () => {
               <li>• Guidance updates weekly with new data</li>
             </ul>
           </section>
+
+          <MarketDataSource />
 
           <div className="rounded border border-border bg-muted/30 p-4">
             <p className="text-xs text-muted-foreground">

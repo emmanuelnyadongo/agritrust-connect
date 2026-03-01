@@ -153,7 +153,7 @@ const FarmerDashboard = ({ listings, negotiations, transactions }: { listings: a
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-foreground">{listing.produce} — {listing.variety}</p>
                 <p className="text-xs text-muted-foreground">
-                  {listing.quantity} {listing.unit} · {listing.location}
+                  {listing.remaining_quantity != null ? `${listing.remaining_quantity} ${listing.unit} left` : `${listing.quantity} ${listing.unit}`} · {listing.location}
                 </p>
               </div>
               <div className="ml-3 flex shrink-0 items-center gap-2 sm:gap-3">
@@ -283,7 +283,7 @@ const BuyerDashboard = ({ listings, negotiations, transactions }: { listings: an
                   {listing.produce} — {listing.variety}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {listing.quantity} {listing.unit} · {listing.farmer?.name ?? 'Farmer'} · {listing.location}
+                  {listing.remaining_quantity != null ? `${listing.remaining_quantity} ${listing.unit} left` : `${listing.quantity} ${listing.unit}`} · {listing.farmer?.name ?? 'Farmer'} · {listing.location}
                 </p>
               </div>
               <div className="ml-3 shrink-0 text-right">

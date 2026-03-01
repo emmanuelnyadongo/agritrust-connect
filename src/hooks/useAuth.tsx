@@ -5,12 +5,14 @@ interface AuthContextValue {
   user: any | null;
   profile: any | null;
   loading: boolean;
+  refetchProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue>({
   user: null,
   profile: null,
   loading: true,
+  refetchProfile: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -20,7 +22,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     user: null,
     profile: null,
     loading: true,
+    refetchProfile: async () => {},
   });
+
+  const refetchProfile = async () => {
+    const { data } = await supabase.auth.getSession();
+    const session = data.session;
+    if (!session?.user) return;
+    try {
+      const profile = await getProfile(session.user.id);
+      setValue((prev) => ({ ...prev, profile, loading: false }));
+    } catch {
+      setValue((prev) => ({ ...prev, profile: null, loading: false }));
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -61,8 +76,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       const user = session.user;
       getProfile(user.id)
-        .then((profile) => setValue({ user, profile, loading: false }))
-        .catch(() => setValue({ user, profile: null, loading: false }));
+        .then((profile) => setValue((prev) => ({ ...prev, user, profile, loading: false, refetchProfile })))
+        .catch(() => setValue((prev) => ({ ...prev, user, profile: null, loading: false, refetchProfile })));
     });
 
     return () => {

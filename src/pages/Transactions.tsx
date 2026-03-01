@@ -1,4 +1,5 @@
 import { AppLayout } from '@/layouts/AppLayout';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getTransactionsForUser } from '@/services/supabaseService';
 import { useAuth } from '@/hooks/useAuth';
@@ -37,6 +38,13 @@ const Transactions = () => {
         </p>
       )}
 
+      <div className="mb-6 rounded border border-border bg-muted/30 p-4">
+        <p className="text-xs text-muted-foreground">
+          <span className="font-medium text-foreground">Payment:</span> AgriTrust does not process payments.
+          Payment is arranged directly between buyer and farmer (e.g. cash, mobile money). Click a transaction to contact the other party or use the in-app thread.
+        </p>
+      </div>
+
       {/* Desktop table */}
       <div className="hidden overflow-hidden rounded border border-border md:block">
         <table className="w-full text-sm">
@@ -53,9 +61,11 @@ const Transactions = () => {
           </thead>
           <tbody>
             {transactions.map((t: any) => (
-              <tr key={t.id} className="border-b border-border last:border-0">
+              <tr key={t.id} className="border-b border-border last:border-0 hover:bg-muted/30">
                 <td className="px-4 py-3 text-muted-foreground">{t.date}</td>
-                <td className="px-4 py-3 font-medium text-foreground">{t.produce}</td>
+                <td className="px-4 py-3 font-medium text-foreground">
+                  <Link to={`/transactions/${t.id}`} className="hover:text-primary hover:underline">{t.produce}</Link>
+                </td>
                 <td className="px-4 py-3 text-foreground">{t.quantity}</td>
                 <td className="px-4 py-3 text-muted-foreground">{t.buyer?.name}</td>
                 <td className="px-4 py-3 text-muted-foreground">{t.farmer?.name}</td>
@@ -78,7 +88,7 @@ const Transactions = () => {
       {/* Mobile cards */}
       <div className="space-y-2 md:hidden">
         {transactions.map((t: any) => (
-          <div key={t.id} className="rounded border border-border p-4">
+          <Link key={t.id} to={`/transactions/${t.id}`} className="block rounded border border-border p-4 transition-colors hover:bg-muted/30">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm font-medium text-foreground">{t.produce}</p>
@@ -110,7 +120,7 @@ const Transactions = () => {
                 <span className="text-foreground">{t.buyer?.name}</span>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

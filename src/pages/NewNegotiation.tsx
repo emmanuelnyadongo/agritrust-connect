@@ -17,6 +17,7 @@ const NewNegotiation = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [submitting, setSubmitting] = useState(false);
+  const [requestedQuantity, setRequestedQuantity] = useState<string>('');
 
   useEffect(() => {
     if (!listingId) {
@@ -52,10 +53,14 @@ const NewNegotiation = () => {
         marketHigh: listing.market_high,
         marketMedian: listing.market_median,
       });
+      const qty = requestedQuantity ? parseFloat(requestedQuantity) : null;
+      const remaining = listing.remaining_quantity ?? (listing.quantity ? parseFloat(String(listing.quantity).replace(/[^0-9.]/g, '')) : null);
+      const finalQty = qty != null && remaining != null && qty > 0 && qty <= remaining ? qty : null;
       await mutation.mutateAsync({
         listingId: listing.id,
         buyerId: user.id,
         systemGuidance: guidance,
+        requestedQuantity: finalQty ?? undefined,
       });
     } finally {
       setSubmitting(false);
@@ -94,7 +99,10 @@ const NewNegotiation = () => {
                 {listing.produce} — {listing.variety}
               </p>
               <p className="text-xs text-muted-foreground">
-                {listing.quantity} {listing.unit} · {listing.location}
+                {listing.remaining_quantity != null
+                  ? `${listing.remaining_quantity} ${listing.unit} remaining`
+                  : `${listing.quantity} ${listing.unit}`}{' '}
+                · {listing.location}
               </p>
             </div>
             <div>
@@ -118,6 +126,24 @@ const NewNegotiation = () => {
               negotiation room. You can then submit your first offer with full price
               guidance.
             </p>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                Quantity you want (optional — leave blank for full remaining)
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={requestedQuantity}
+                onChange={(e) => setRequestedQuantity(e.target.value)}
+                placeholder={
+                  listing.remaining_quantity != null
+                    ? `e.g. ${Math.min(50, listing.remaining_quantity)}`
+                    : 'e.g. 50'
+                }
+                className="w-full rounded border border-input bg-background px-3 py-2 text-sm"
+              />
+            </div>
             <button
               type="button"
               onClick={handleStart}

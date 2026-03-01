@@ -13,6 +13,7 @@ import NewListing from "./pages/NewListing";
 import NegotiationRoom from "./pages/NegotiationRoom";
 import Negotiations from "./pages/Negotiations";
 import Transactions from "./pages/Transactions";
+import TransactionDetail from "./pages/TransactionDetail";
 import Profile from "./pages/Profile";
 import NewNegotiation from "./pages/NewNegotiation";
 import NotFound from "./pages/NotFound";
@@ -108,6 +109,14 @@ const App = () => (
                 element={
                   <RequireAuth>
                     <Transactions />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/transactions/:id"
+                element={
+                  <RequireAuth>
+                    <TransactionDetail />
                   </RequireAuth>
                 }
               />

@@ -43,11 +43,12 @@ const NewListing = () => {
 
     setSubmitting(true);
     try {
+      const totalQty = parseFloat(form.quantity) || 0;
       const row = {
         farmer_id: profile.id,
         produce: form.produce,
         variety: form.variety,
-        quantity: form.quantity,
+        quantity: String(totalQty),
         unit: form.unit,
         quality: form.quality,
         location: form.location,
@@ -59,6 +60,8 @@ const NewListing = () => {
         available_until: form.availableUntil,
         description: form.description,
         status: 'active',
+        total_quantity: totalQty,
+        remaining_quantity: totalQty,
       };
 
       const listing = await createListing(row);
@@ -105,14 +108,19 @@ const NewListing = () => {
 
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">Quantity</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">Total quantity</label>
             <input
               name="quantity"
+              type="number"
+              min="0"
+              step="any"
               value={form.quantity}
               onChange={handleChange}
               required
+              placeholder="e.g. 500"
               className="w-full rounded border border-input bg-background px-3 py-2 text-sm"
             />
+            <p className="mt-0.5 text-xs text-muted-foreground">Remaining will decrease when deals are agreed</p>
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-muted-foreground">Unit</label>

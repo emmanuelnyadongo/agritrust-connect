@@ -109,7 +109,9 @@ const Marketplace = () => {
                   </p>
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">{listing.location}</td>
-                <td className="px-4 py-3 text-right text-foreground">{listing.quantity} {listing.unit}</td>
+                <td className="px-4 py-3 text-right text-foreground">
+                  {listing.remaining_quantity != null ? `${listing.remaining_quantity} ${listing.unit} left` : `${listing.quantity} ${listing.unit}`}
+                </td>
                 <td className="px-4 py-3 text-right font-medium text-foreground">${listing.price_per_unit.toFixed(2)}</td>
                 <td className="px-4 py-3 text-right text-muted-foreground">${listing.market_low.toFixed(2)}–${listing.market_high.toFixed(2)}</td>
                 <td className="px-4 py-3">
@@ -147,7 +149,9 @@ const Marketplace = () => {
               </span>
             </div>
               <div className="mt-2 flex items-baseline justify-between text-sm">
-                <span className="text-muted-foreground">{listing.quantity} {listing.unit}</span>
+                <span className="text-muted-foreground">
+                {listing.remaining_quantity != null ? `${listing.remaining_quantity} ${listing.unit} left` : `${listing.quantity} ${listing.unit}`}
+              </span>
                 <span className="font-medium text-foreground">${listing.price_per_unit.toFixed(2)}/kg</span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">

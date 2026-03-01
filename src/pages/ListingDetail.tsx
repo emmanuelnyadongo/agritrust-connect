@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getListingById } from '@/services/supabaseService';
+import { MarketDataSource } from '@/components/analytics/MarketDataSource';
 
 const ListingDetail = () => {
   const { id } = useParams();
@@ -61,7 +62,7 @@ const ListingDetail = () => {
             <h2 className="mb-3 font-heading text-sm font-semibold text-foreground">Produce Details</h2>
             <dl className="space-y-2 text-sm">
               {[
-                ['Quantity', `${listing.quantity} ${listing.unit}`],
+                ['Quantity', listing.remaining_quantity != null ? `${listing.remaining_quantity} ${listing.unit} remaining` : `${listing.quantity} ${listing.unit}`],
                 ['Quality', listing.quality],
                 ['Location', listing.location],
                 ['Available', `${listing.available_from} → ${listing.available_until}`],
@@ -99,6 +100,9 @@ const ListingDetail = () => {
                   by ${Math.abs(listing.price_per_unit - listing.market_median).toFixed(2)}/kg
                 </p>
               </div>
+            </div>
+            <div className="mt-4">
+              <MarketDataSource />
             </div>
           </section>
 

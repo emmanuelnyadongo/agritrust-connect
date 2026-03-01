@@ -59,7 +59,7 @@ export async function updateProfile(userId, updates) {
 }
 
 // --- Listings ---
-const listingSelect = 'id, farmer_id, produce, variety, quantity, unit, quality, location, price_per_unit, market_low, market_high, market_median, available_from, available_until, description, status, created_at, farmer:profiles!farmer_id(id, name, rating, completed_transactions)';
+const listingSelect = 'id, farmer_id, produce, variety, quantity, unit, quality, location, price_per_unit, market_low, market_high, market_median, available_from, available_until, description, status, total_quantity, remaining_quantity, created_at, farmer:profiles!farmer_id(id, name, rating, completed_transactions)';
 
 export async function getListings(filters = {}) {
   let q = supabase
@@ -113,17 +113,18 @@ export async function deleteListing(id) {
 
 // --- Negotiations ---
 const negotiationSelect =
-  'id, listing_id, buyer_id, status, system_guidance, created_at, updated_at,' +
-  ' listing:listings(id, produce, variety, quantity, unit, farmer:profiles!farmer_id(id, name)),' +
+  'id, listing_id, buyer_id, status, system_guidance, requested_quantity, created_at, updated_at,' +
+  ' listing:listings(id, produce, variety, quantity, unit, total_quantity, remaining_quantity, farmer:profiles!farmer_id(id, name)),' +
   ' buyer:profiles!buyer_id(id, name)';
 
-export async function createNegotiation({ listingId, buyerId, systemGuidance }) {
+export async function createNegotiation({ listingId, buyerId, systemGuidance, requestedQuantity }) {
   const { data, error } = await supabase
     .from('negotiations')
     .insert({
       listing_id: listingId,
       buyer_id: buyerId,
       system_guidance: systemGuidance ?? null,
+      requested_quantity: requestedQuantity ?? null,
     })
     .select(negotiationSelect)
     .single();
@@ -194,7 +195,7 @@ export async function createOffer({ negotiationId, fromRole, price, note }) {
 }
 
 // --- Transactions ---
-const transactionSelect = 'id, produce, quantity, agreed_price, date, status, buyer:profiles!buyer_id(id, name), farmer:profiles!farmer_id(id, name)';
+const transactionSelect = 'id, produce, quantity, agreed_price, agreed_quantity, date, status, negotiation_id, listing_id, buyer_id, farmer_id, buyer:profiles!buyer_id(id, name, phone), farmer:profiles!farmer_id(id, name, phone)';
 
 export async function getTransactionsForUser(userId) {
   const { data, error } = await supabase
@@ -202,6 +203,73 @@ export async function getTransactionsForUser(userId) {
     .select(transactionSelect)
     .or(`buyer_id.eq.${userId},farmer_id.eq.${userId}`)
     .order('date', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+export async function getTransactionById(id) {
+  const { data, error } = await supabase
+    .from('transactions')
+    .select(transactionSelect)
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+// --- Transaction messages (post-deal chat) ---
+export async function getMessagesByTransactionId(transactionId) {
+  const { data, error } = await supabase
+    .from('transaction_messages')
+    .select('id, transaction_id, sender_id, body, created_at, sender:profiles!sender_id(id, name)')
+    .eq('transaction_id', transactionId)
+    .order('created_at', { ascending: true });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function createMessage({ transactionId, senderId, body }) {
+  const { data, error } = await supabase
+    .from('transaction_messages')
+    .insert({ transaction_id: transactionId, sender_id: senderId, body })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export function subscribeToTransactionMessages(transactionId, onInsert) {
+  return supabase
+    .channel(`transaction_messages:${transactionId}`)
+    .on(
+      'postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'transaction_messages', filter: `transaction_id=eq.${transactionId}` },
+      (payload) => onInsert(payload.new)
+    )
+    .subscribe();
+}
+
+// --- Ratings ---
+export async function getRatingsForTransaction(transactionId) {
+  const { data, error } = await supabase
+    .from('ratings')
+    .select('id, transaction_id, rater_id, ratee_id, score, created_at')
+    .eq('transaction_id', transactionId);
+  if (error) throw error;
+  return data || [];
+}
+
+export async function submitRating({ transactionId, raterId, rateeId, score }) {
+  const { data, error } = await supabase
+    .from('ratings')
+    .insert({
+      transaction_id: transactionId,
+      rater_id: raterId,
+      ratee_id: rateeId,
+      score: Number(score),
+    })
+    .select()
+    .single();
   if (error) throw error;
   return data;
 }
