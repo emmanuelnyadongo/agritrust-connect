@@ -12,15 +12,15 @@
 | Item | Link / location |
 |------|------------------|
 | **Deployed app** | [https://agritrust-connect-theta.vercel.app/](https://agritrust-connect-theta.vercel.app/) |
-| **Demo video (≈5 min)** | [View Video Demo](https://www.awesomescreenshot.com/video/49250805?key=8b27c8e6aed4459b93cd1c43f6794d4b) — focus on core functionalities (marketplace, listing, negotiation, transaction, ratings) |
+| **Demo video (≈5 min)** | [View Video Demo](https://www.awesomescreenshot.com/video/49951259?key=045e323d5073e9e9247f7d12ef015ac6) — focus on core functionalities (marketplace, listing, negotiation, transaction, ratings) |
 | **Install & run** | See [How to Set Up the Environment and the Project](#how-to-set-up-the-environment-and-the-project) below (step-by-step). |
 | **Related files** | See [Related files to the project](#related-files-to-the-project) below. |
 
 ---
 
-## ðŸ“¹ Video Demonstration
+## Video Demonstration
 
-**Watch the project demonstration video:** [View Video Demo](https://www.awesomescreenshot.com/video/49250805?key=8b27c8e6aed4459b93cd1c43f6794d4b)
+**Watch the project demonstration video:** [View Video Demo](https://www.awesomescreenshot.com/video/49951259?key=045e323d5073e9e9247f7d12ef015ac6)
 
 The video covers frontend development, backend architecture, database schema, and a live walkthrough of key functionalities.
 
@@ -56,11 +56,11 @@ Existing digital platforms either **centralise pricing authority** or **provide 
 
 AgriTrust embeds negotiation support into the transaction itself.
 
-| Instead ofâ€¦ | The system providesâ€¦ |
-|-------------|-------------------------|
+| Instead of... | The system provides... |
+|---------------|------------------------|
 | Static price lists | Real-time market price ranges |
 | Informal off-platform bargaining | Contextual price recommendations |
-| â€” | Transparent reasoning behind guidance |
+| — | Transparent reasoning behind guidance |
 
 Negotiation remains between people. The system acts as an **evidence layer**.
 
@@ -379,6 +379,20 @@ The flow avoids forced steps and allows natural movement between actions.
 ## Project Structure
 
 Main app code lives in `src/`; Supabase schema, policies, and migrations are in `supabase/`.
+
+| Folder / file | Purpose |
+|---------------|---------|
+| **src/** | Frontend application |
+| `src/components/` | Reusable UI (auth, navigation, analytics, etc.) |
+| `src/pages/` | Route pages: Dashboard, Marketplace, ListingDetail, NewListing, NegotiationRoom, Negotiations, Transactions, TransactionDetail, Profile, Entry, Terms, NotFound |
+| `src/layouts/` | App layout (sidebar + main) |
+| `src/hooks/` | useAuth, useRole, use-mobile |
+| `src/services/` | supabaseService.js (auth, listings, negotiations, offers, transactions, messages, ratings) |
+| `src/utils/` | negotiationGuidance.ts (price recommendation logic) |
+| **supabase/** | Backend schema and migrations |
+| `supabase/schema.sql` | Base tables and triggers |
+| `supabase/policies.sql` | Row Level Security policies |
+| `supabase/migrations/` | 001 (ratings, messages, partial qty), 002 (RLS), 003 (transaction status) |
 
 ```
 src/
