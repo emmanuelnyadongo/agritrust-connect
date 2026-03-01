@@ -7,20 +7,20 @@
 
 ---
 
-## Submission (Attempt 1)
+## Submission
 
-| Item | Link / location |
-|------|------------------|
+| Item | What was submitted |
+|------|--------------------|
 | **Deployed app** | [https://agritrust-connect-theta.vercel.app/](https://agritrust-connect-theta.vercel.app/) |
-| **Demo video (≈5 min)** | [View Video Demo](https://www.awesomescreenshot.com/video/49951259?key=045e323d5073e9e9247f7d12ef015ac6) — focus on core functionalities (marketplace, listing, negotiation, transaction, ratings) |
-| **Install & run** | See [How to Set Up the Environment and the Project](#how-to-set-up-the-environment-and-the-project) below (step-by-step). |
-| **Related files** | See [Related files to the project](#related-files-to-the-project) below. |
+| **Demo video (5 min)** | [View Video Demo](https://www.awesomescreenshot.com/video/49951259?key=045e323d5073e9e9247f7d12ef015ac6) — demonstrates marketplace, listing, negotiation, transaction, and ratings. |
+| **Install & run** | Step-by-step instructions are documented in [How to Set Up the Environment and the Project](#how-to-set-up-the-environment-and-the-project). |
+| **Related files** | Listed in [Related files to the project](#related-files-to-the-project). |
 
 ---
 
 ## Video Demonstration
 
-**Watch the project demonstration video:** [View Video Demo](https://www.awesomescreenshot.com/video/49951259?key=045e323d5073e9e9247f7d12ef015ac6)
+**Project demonstration video:** [View Video Demo](https://www.awesomescreenshot.com/video/49951259?key=045e323d5073e9e9247f7d12ef015ac6)
 
 The video covers frontend development, backend architecture, database schema, and a live walkthrough of key functionalities.
 
