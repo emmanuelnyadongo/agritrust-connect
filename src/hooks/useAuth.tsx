@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
-        setValue({ user: null, profile: null, loading: false });
+        setValue((prev) => ({ ...prev, user: null, profile: null, loading: false }));
         return;
       }
 
