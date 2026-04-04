@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (!session) {
         if (!cancelled) {
-          setValue({ user: null, profile: null, loading: false });
+          setValue((prev) => ({ ...prev, user: null, profile: null, loading: false }));
         }
         return;
       }
