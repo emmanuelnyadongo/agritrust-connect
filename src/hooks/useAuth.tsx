@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (!session) {
         if (!cancelled) {
-          setValue({ user: null, profile: null, loading: false });
+          setValue((prev) => ({ ...prev, user: null, profile: null, loading: false }));
         }
         return;
       }
@@ -55,11 +55,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const profile = await getProfile(user.id);
         if (!cancelled) {
-          setValue({ user, profile, loading: false });
+          setValue((prev) => ({ ...prev, user, profile, loading: false }));
         }
       } catch {
         if (!cancelled) {
-          setValue({ user, profile: null, loading: false });
+          setValue((prev) => ({ ...prev, user, profile: null, loading: false }));
         }
       }
     };
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
-        setValue({ user: null, profile: null, loading: false });
+        setValue((prev) => ({ ...prev, user: null, profile: null, loading: false }));
         return;
       }
 

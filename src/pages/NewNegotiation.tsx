@@ -61,7 +61,7 @@ const NewNegotiation = () => {
         buyerId: user.id,
         systemGuidance: guidance,
         requestedQuantity: finalQty ?? undefined,
-      });
+      } as any);
     } finally {
       setSubmitting(false);
     }

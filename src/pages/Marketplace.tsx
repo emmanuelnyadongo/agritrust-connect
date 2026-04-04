@@ -63,7 +63,7 @@ const Marketplace = () => {
           />
         </div>
         <div className="flex flex-wrap gap-1.5">
-          {locations.map((loc) => (
+          {locations.map((loc: string) => (
             <button
               key={loc}
               onClick={() => setLocationFilter(loc)}

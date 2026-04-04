@@ -18,6 +18,7 @@ import Profile from "./pages/Profile";
 import NewNegotiation from "./pages/NewNegotiation";
 import NotFound from "./pages/NotFound";
 import Terms from "./pages/Terms";
+import Legal from "./pages/Legal";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Entry />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/legal" element={<Legal />} />
               <Route
                 path="/dashboard"
                 element={
