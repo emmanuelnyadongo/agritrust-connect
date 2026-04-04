@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const profile = await getProfile(user.id);
         if (!cancelled) {
-          setValue({ user, profile, loading: false });
+          setValue((prev) => ({ ...prev, user, profile, loading: false }));
         }
       } catch {
         if (!cancelled) {
