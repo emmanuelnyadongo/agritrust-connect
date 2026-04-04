@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch {
         if (!cancelled) {
-          setValue({ user, profile: null, loading: false });
+          setValue((prev) => ({ ...prev, user, profile: null, loading: false }));
         }
       }
     };
