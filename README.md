@@ -1,4 +1,4 @@
-# AgriTrust
+# AgriTrust Connect
 
 > A negotiation-focused agricultural marketplace for smallholder farmers.
 
