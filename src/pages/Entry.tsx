@@ -67,7 +67,7 @@ const Entry = () => {
               Contact support
             </a>
             {' · '}
-            <Link to="/terms" className="text-primary hover:underline">
+            <Link to="/legal" className="text-primary hover:underline">
               Terms & Privacy
             </Link>
           </p>
